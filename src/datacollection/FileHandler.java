@@ -79,9 +79,21 @@ public class FileHandler {
     }
 
     // Ghi thông báo về hashtag đang thu thập vào file
-    public void noticeHashtag(String filePath, String hashtag) {
+    public void noticeStartHashtag(String filePath, String hashtag) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write("Đang thu thập dữ liệu với hashtag: " + hashtag);
+            writer.newLine();
+            writer.flush();
+        } catch (IOException e) {
+            System.out.println("Lỗi khi ghi thông báo vào file tổng: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    // Ghi thông báo thu thập xong hashtag vào file
+    public void noticeEndHashtag(String filePath, String hashtag) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            writer.write("Đã thu thập xong dữ liệu với hashtag: " + hashtag);
             writer.newLine();
             writer.flush();
         } catch (IOException e) {

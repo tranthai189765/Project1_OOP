@@ -35,10 +35,10 @@ public class TwitterKOLFinder {
     public void findKOLs(String hashtag, int maxUsers) {
         twitterLogin.login(driver);
         twitterSearch.searchHashtag(hashtag);
-        
-        fileHandler.noticeHashtag(ALL_LINKS_FILE_PATH, hashtag);
+        fileHandler.noticeStartHashtag(ALL_LINKS_FILE_PATH, hashtag);
         Set<String> links = collectUserLinks(maxUsers);
         fileHandler.writeLinksToFile(ALL_LINKS_FILE_PATH, links);
+        fileHandler.noticeEndHashtag(ALL_LINKS_FILE_PATH, hashtag);
     }
 
     public void runWithHashtagsFromFile(int maxUsers) {
