@@ -36,7 +36,7 @@ public class TwitterKOLFinder {
         twitterLogin.login(driver);
         twitterSearch.searchHashtag(hashtag);
         fileHandler.noticeStartHashtag(ALL_LINKS_FILE_PATH, hashtag);
-        Set<String> links = collectUserLinks(maxUsers);
+        Set<String> links = collectUserLinks(hashtag,maxUsers);
         fileHandler.writeLinksToFile(ALL_LINKS_FILE_PATH, links);
         fileHandler.noticeEndHashtag(ALL_LINKS_FILE_PATH, hashtag);
     }
@@ -54,9 +54,9 @@ public class TwitterKOLFinder {
         }
     }
 
-    private Set<String> collectUserLinks(int maxUsers) {
+    private Set<String> collectUserLinks(String hashtag, int maxUsers) {
         Set<String> collectedLinks = fileHandler.readLinksFromFile(ALL_LINKS_FILE_PATH);
-        File dailyFile = fileHandler.createDailyFile();
+        File dailyFile = fileHandler.createDailyFile(hashtag);
         Set<String> recordedLinks = new HashSet<>();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dailyFile))) {
@@ -105,7 +105,7 @@ public class TwitterKOLFinder {
 
                 ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 600)");
                 try {
-                    Thread.sleep(6000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     System.out.println("Lỗi trong quá trình chờ tải trang: " + e.getMessage());
                     Thread.currentThread().interrupt();

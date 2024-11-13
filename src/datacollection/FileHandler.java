@@ -43,10 +43,10 @@ public class FileHandler {
     }
 
     // Tạo file mới cho ngày hôm nay với định dạng YYYY-MM-DD_HH-MM-SS
-    public File createDailyFile() {
+    public File createDailyFile(String hashtag) {
         String today = java.time.LocalDate.now().toString(); 
         String currentTime = java.time.LocalTime.now().toString().replace(":", "-");
-        File dailyFile = new File(today + "_" + currentTime + "_user_links.txt");
+        File dailyFile = new File(today + "_" + currentTime + "_" + hashtag + "_" + "_user_links.txt");
 
         if (!dailyFile.exists()) {
             try {
