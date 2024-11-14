@@ -20,7 +20,7 @@ public class Main {
             TwitterKOLFinder finder = new TwitterKOLFinder(driver, username, password, email);
 
             // Tìm kiếm KOLs với hashtag #Blockchain
-            finder.findKOLs("#Blockchain", 100);
+            finder.findKOLs("#Blockchain", 2000);
 
         } finally {
             // Đóng trình duyệt

@@ -64,6 +64,13 @@ public class TwitterKOLFinder {
             int count = 0;
 
             while (count < maxUsers) {
+                // Kiểm tra xem có biểu tượng "retry" xuất hiện không
+            	List<WebElement> retryElements = driver.findElements(By.xpath("//span[contains(text(),'Retry') and contains(@class, 'css-1jxf684')]"));
+                if (!retryElements.isEmpty()) {
+                    System.out.println("Đã đến giới hạn dữ liệu, dừng thu thập.");
+                    break;
+                }
+
                 List<WebElement> users = wait.until(ExpectedConditions
                         .presenceOfAllElementsLocatedBy(By.cssSelector("button[data-testid='UserCell']")));
 
@@ -87,7 +94,7 @@ public class TwitterKOLFinder {
                                 collectedLinks.add(userProfileUrl);
                                 count++;
 
-                                System.out.println("Đã ghi liên kết của người dùng: " + userProfileUrl);
+                                System.out.println("Cout: " + count + "Đã ghi liên kết của người dùng: " + userProfileUrl);
                             } else {
                                 System.out.println("Phát hiện người dùng trùng: " + userProfileUrl);
                             }
@@ -103,9 +110,9 @@ public class TwitterKOLFinder {
                     }
                 }
 
-                ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 600)");
+                ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 400)");
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(4000);
                 } catch (InterruptedException e) {
                     System.out.println("Lỗi trong quá trình chờ tải trang: " + e.getMessage());
                     Thread.currentThread().interrupt();
