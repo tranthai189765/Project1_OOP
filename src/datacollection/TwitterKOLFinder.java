@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,25 +59,46 @@ public class TwitterKOLFinder {
         Set<String> collectedLinks = fileHandler.readLinksFromFile(ALL_LINKS_FILE_PATH);
         File dailyFile = fileHandler.createDailyFile(hashtag);
         Set<String> recordedLinks = new HashSet<>();
+        long lastWriteTime = Instant.now().getEpochSecond();
+        long currentTime = Instant.now().getEpochSecond();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dailyFile))) {
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             int count = 0;
 
             while (count < maxUsers) {
-                // Kiểm tra xem có biểu tượng "retry" xuất hiện không
             	List<WebElement> retryElements = driver.findElements(By.xpath("//span[contains(text(),'Retry') and contains(@class, 'css-1jxf684')]"));
-                if (!retryElements.isEmpty()) {
-                    System.out.println("Đã đến giới hạn dữ liệu, dừng thu thập.");
-                    break;
-                }
 
                 List<WebElement> users = wait.until(ExpectedConditions
                         .presenceOfAllElementsLocatedBy(By.cssSelector("button[data-testid='UserCell']")));
+                
+                currentTime = Instant.now().getEpochSecond();
 
-                if (users.isEmpty()) {
-                    System.out.println("Không có người dùng nào trên trang này.");
+                if (!users.isEmpty() && currentTime - lastWriteTime > 300) {
+                    System.out.println("Không có dữ liệu mới trong 5 phút. Chương trình tự động dừng.");
                     break;
+                }
+                else if (users.isEmpty() || (currentTime - lastWriteTime > 15)) {
+                    System.out.println("Không có dữ liệu mới trong 15 giây. Đợi 2 phút để tải thêm users...");
+                    try {
+                        Thread.sleep(120000); // Đợi 2 phút
+                    } catch (InterruptedException e) {
+                        System.out.println("Lỗi trong quá trình chờ: " + e.getMessage());
+                        Thread.currentThread().interrupt();
+                    }
+
+                    // Nhấn nút Retry nếu thấy
+                    if (!retryElements.isEmpty()) {
+                        try {
+                            retryElements.get(0).click();
+                            System.out.println("Đã nhấn nút Retry để tải thêm users.");
+                        } catch (Exception e) {
+                            System.out.println("Lỗi khi nhấn nút Retry: " + e.getMessage());
+                        }
+                    } else if (users.isEmpty()) {
+                        System.out.println("Không có dữ liệu mới. Dừng thu thập.");
+                        break;
+                    }
                 }
 
                 for (WebElement user : users) {
@@ -93,8 +115,8 @@ public class TwitterKOLFinder {
                                 recordedLinks.add(userProfileUrl);
                                 collectedLinks.add(userProfileUrl);
                                 count++;
-
-                                System.out.println("Cout: " + count + "Đã ghi liên kết của người dùng: " + userProfileUrl);
+                                lastWriteTime = Instant.now().getEpochSecond();
+                                System.out.println("Count: " + count + "  Đã ghi liên kết của người dùng: " + userProfileUrl);
                             } else {
                                 System.out.println("Phát hiện người dùng trùng: " + userProfileUrl);
                             }
@@ -110,9 +132,9 @@ public class TwitterKOLFinder {
                     }
                 }
 
-                ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 400)");
+                ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 800)");
                 try {
-                    Thread.sleep(4000);
+                    Thread.sleep(6000);
                 } catch (InterruptedException e) {
                     System.out.println("Lỗi trong quá trình chờ tải trang: " + e.getMessage());
                     Thread.currentThread().interrupt();
