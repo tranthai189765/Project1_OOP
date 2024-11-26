@@ -1,39 +1,22 @@
-package model;
+package data;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class User {
-	private String id;
-    private String name;
+public class User extends Node {
+    private String url;
     private Set<User> followers;
     private Set<User> following;
 
     // Constructor
-    public User(String id, String name) {
-        this.id = id;
-        this.name = name;
+    public User(String id, String url) {
+    	super(id);
+        this.url = url;
         this.followers = new HashSet<>();
         this.following = new HashSet<>();
     }
 
-    // Getter và Setter cho id và name
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    // Getter và Setter cho name
     // Phương thức thêm follower
     public void addFollower(User follower) {
         followers.add(follower);
@@ -65,4 +48,12 @@ public class User {
     public boolean isFollowing(User user) {
         return following.contains(user);
     }
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 }
