@@ -1,0 +1,32 @@
+{
+  "user_DrBitcoinMD" : [ {
+    "id" : "user_DrBitcoinMD",
+    "url" : "https://x.com/DrBitcoinMD",
+    "location" : "United States",
+    "professionalCategory" : null,
+    "joinDate" : "Joined May 2017",
+    "website" : null,
+    "tweetCount" : "23.2K posts",
+    "followingCount" : "2,180",
+    "followersCount" : "44.6K",
+    "description" : "building ",
+    "followers" : [ "user_BTCsessions", "user_MrHodl", "user_BitcoinPierre", "user_Mandrik", "user_BTCGandalf", "user_francispouliot_", "user_giacomozucco", "user_nvk", "user_parman_the", "user_knutsvanholm", "user_TomerStrolight", "user_bitstein", "user_Croesus_BTC", "user_americanhodl8", "user_SGBarbour", "user_stephanlivera", "user_hodlonaut", "user_BITVOLT", "user_BitcoinIsSaving", "user_TheGuySwann" ],
+    "following" : [ ],
+    "tweets" : [ ]
+  } ],
+  "user_CitizenBitcoin" : [ {
+    "id" : "user_CitizenBitcoin",
+    "url" : "https://x.com/CitizenBitcoin",
+    "location" : "The Timechain",
+    "professionalCategory" : null,
+    "joinDate" : "Joined January 2018",
+    "website" : "https://t.co/oIeW6ENuYR",
+    "tweetCount" : "30.2K posts",
+    "followingCount" : "2,016",
+    "followersCount" : "48.3K",
+    "description" : "http://",
+    "followers" : [ "user_BTCsessions", "user_MartyBent", "user_BTCGandalf", "user_SwanBitcoin", "user_nvk", "user_parman_the", "user_knutsvanholm", "user_thetrocro", "user_TomerStrolight", "user_bitstein", "user_IIICapital", "user_americanhodl8", "user_SGBarbour", "user_FossGregfoss", "user_stephanlivera", "user_bradmillscan", "user_NeilJacobs", "user_BITVOLT", "user_BitcoinIsSaving", "user_TheGuySwann" ],
+    "following" : [ ],
+    "tweets" : [ ]
+  } ]
+}

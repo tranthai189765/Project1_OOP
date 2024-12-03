@@ -1,7 +1,11 @@
-package data;
+package entities;
 
 public class Node {
     private String id; // ID duy nhất cho mỗi node
+    
+    public Node() {
+    	
+    }
 
     public Node(String id) {
         this.id = id;

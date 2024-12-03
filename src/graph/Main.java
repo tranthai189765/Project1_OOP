@@ -1,7 +1,7 @@
 package graph;
 
-import data.User;
-import data.Tweet;
+import entities.Tweet;
+import entities.User;
 
 public class Main {
     public static void main(String[] args) {

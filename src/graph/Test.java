@@ -1,7 +1,5 @@
 package graph;
 
-import data.Tweet;
-import data.User;
 
 public class Test {
 	public static void main(String[] args) {

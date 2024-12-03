@@ -1,0 +1,32 @@
+{
+  "blockchain" : [ {
+    "id" : "user_CitizenBitcoin",
+    "url" : "https://x.com/CitizenBitcoin",
+    "location" : null,
+    "professionalCategory" : null,
+    "joinDate" : null,
+    "website" : null,
+    "tweetCount" : 0,
+    "followingCount" : 0,
+    "followersCount" : 0,
+    "description" : null,
+    "followers" : [ ],
+    "following" : [ ],
+    "tweets" : [ {
+      "id" : "1",
+      "author" : "user_CitizenBitcoin",
+      "retweetedBy" : null,
+      "commentedBy" : null
+    }, {
+      "id" : "2",
+      "author" : "user_CitizenBitcoin",
+      "retweetedBy" : null,
+      "commentedBy" : null
+    }, {
+      "id" : "3",
+      "author" : "user_CitizenBitcoin",
+      "retweetedBy" : null,
+      "commentedBy" : null
+    } ]
+  } ]
+}

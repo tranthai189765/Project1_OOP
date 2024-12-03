@@ -21,9 +21,9 @@ import org.jgrapht.nio.graphml.GraphMLImporter;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
-import data.Node;
-import data.User;
-import data.Tweet;
+import entities.Node;
+import entities.Tweet;
+import entities.User;
 
 public class GraphModel {
 
