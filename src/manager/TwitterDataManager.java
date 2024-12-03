@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,13 +14,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+
 import entities.Tweet;
 import entities.User;
 
+
 public class TwitterDataManager implements DataManagerInterface {
 	private Map<String, List<User>> data;
-	public TwitterDataManager() {
+
+	private final String databasefilepath;
+	public TwitterDataManager(String databasefilepath) {
         this.data = new HashMap<>();
+        this.databasefilepath = databasefilepath;
     }
 
 	@Override
@@ -58,7 +64,7 @@ public class TwitterDataManager implements DataManagerInterface {
         }
 	}
 	
-	public void updateFollowersForUser(String userId, Set<User> followers) {
+	public void updateFollowersForUser(String userId, Set<String> followers) {
 		// TODO Auto-generated method stub
 		// Tìm User trong database và cập nhật danh sách Tweet
 		String dict = userId;
@@ -80,26 +86,26 @@ public class TwitterDataManager implements DataManagerInterface {
 	}
 
 	@Override
-	public void saveToJsonFile(String filePath) {
+	public void saveToDatabase() {
 		// TODO Auto-generated method stub
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         try {
-            mapper.writeValue(new File(filePath), data);
-            System.out.println("Dữ liệu đã được lưu vào file JSON: " + filePath);
+            mapper.writeValue(new File(this.databasefilepath), data);
+            System.out.println("Dữ liệu đã được lưu vào file JSON: " + this.databasefilepath);
         } catch (IOException e) {
             System.err.println("Lỗi khi lưu file JSON: " + e.getMessage());
         }
     }
 
 	@Override
-	public void loadFromJsonFile(String filePath) {
+	public void loadFromDatabase() {
 		// TODO Auto-generated method stub
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            File file = new File(filePath);
+            File file = new File(this.databasefilepath);
             if (file.exists()) {
                 data = mapper.readValue(file, new TypeReference<Map<String, List<User>>>() {});
                 System.out.println("Dữ liệu đã được tải từ file JSON.");
@@ -109,6 +115,64 @@ public class TwitterDataManager implements DataManagerInterface {
         } catch (IOException e) {
             System.err.println("Lỗi khi tải file JSON: " + e.getMessage());
         }
+	}
+
+
+	@Override
+	public void updateBasicInfoForUser(String userId, User updatedUser) {
+		// TODO Auto-generated method stub
+		// Tìm User trong database và cập nhật thông tin cơ bản
+	    String dict = userId;
+	    if (data.containsKey(dict)) {
+	        Optional<User> userOpt = data.get(dict).stream()
+	            .filter(user -> user.getId().equals(userId))
+	            .findFirst();
+
+	        if (userOpt.isPresent()) {
+	            User existingUser = userOpt.get();
+	            // Cập nhật thông tin cơ bản
+	            existingUser.setDescription(updatedUser.getDescription());
+	            existingUser.setFollowersCount(updatedUser.getFollowersCount());
+	            existingUser.setFollowingCount(updatedUser.getFollowingCount());
+	            existingUser.SetId(updatedUser.getId());
+	            existingUser.setJoinDate(updatedUser.getJoinDate());
+	            existingUser.setLocation(updatedUser.getLocation());
+	            existingUser.setProfessionalCategory(updatedUser.getProfessionalCategory());
+	            existingUser.setTweetCount(updatedUser.getTweetCount());
+	            existingUser.setUrl(updatedUser.getUrl());
+	            existingUser.setWebsite(updatedUser.getWebsite());
+	            // Thêm các trường cần cập nhật khác nếu cần thiết
+
+	            System.out.println("Thông tin cơ bản đã được cập nhật cho User: " + userId);
+	        } else {
+	            System.out.println("Không tìm thấy User: " + userId);
+	        }
+	    } else {
+	        System.out.println("Không tìm thấy từ điển: " + dict);
+	    }
+		
+	}
+
+	@Override
+	public User getUserById(String userId) {
+		// TODO Auto-generated method stub
+		// Tìm User trong database theo id
+	    String dict = userId;
+	    if (data.containsKey(dict)) {
+	        Optional<User> userOpt = data.get(dict).stream()
+	            .filter(user -> user.getId().equals(userId))
+	            .findFirst();
+
+	        if (userOpt.isPresent()) {
+	            return userOpt.get(); // Trả về User nếu tìm thấy
+	        } else {
+	            System.out.println("Không tìm thấy User: " + userId);
+	            return null; // Hoặc ném ngoại lệ tùy theo yêu cầu
+	        }
+	    } else {
+	        System.out.println("Không tìm thấy từ điển: " + dict);
+	        return null; // Hoặc ném ngoại lệ tùy theo yêu cầu
+	    }
 	}
 
 }

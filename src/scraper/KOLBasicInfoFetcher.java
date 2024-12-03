@@ -2,6 +2,7 @@ package scraper;
 
 import java.time.Duration;
 
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -26,6 +27,7 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	public void fetchProfile(User kol) {
 	    // TODO Auto-generated method stub
 	    System.out.println("Fetching KOL profile...");
+	    manager.addUserToDataBase(kol);
 	    driver.get(kol.getUrl());
 	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 	    
@@ -40,14 +42,16 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	    }
 
 	    try {
-	        // Lấy dòng giới thiệu của user
-	        WebElement introElement = driver.findElement(By.cssSelector("div[data-testid='UserDescription'] span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
-	        String introText = introElement.getText();
-	       // System.out.println("Dòng giới thiệu của user: " + introText);
+	        // Tìm phần tử mô tả
+	        WebElement introElement = driver.findElement(By.cssSelector("div[data-testid='UserDescription']"));
+
+	        // Lấy toàn bộ nội dung của phần mô tả (bao gồm cả văn bản và liên kết)
+	        String introText = introElement.getText().replace("\n", " ");
 	        kol.setDescription(introText);
 	    } catch (Exception e) {
-	        System.out.println("Không tìm thấy dòng giới thiệu của user.");
+	        System.out.println("Có lỗi xảy ra khi xử lý phần mô tả.");
 	    }
+
 
 	    try {
 	        // Lấy công ty của user
@@ -107,7 +111,8 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	    } catch (Exception e) {
 	        System.out.println("Không tìm thấy số lượng followers của user.");
 	    }
-	    manager.addUserToDataBase(kol);
+	    manager.updateBasicInfoForUser(kol.getId(), kol);
+	    manager.saveToDatabase();
 	}
 
 
@@ -119,6 +124,27 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 
 	@Override
 	public void fetchTweets(User kol) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void fetchProfileFromKOLFile(String filepath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void fetchFollowersFromKOLFile(String filepath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void fetchTweetsFromKOLFile(String filepath) {
 		// TODO Auto-generated method stub
 		
 	}

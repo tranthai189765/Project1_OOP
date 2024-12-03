@@ -23,4 +23,22 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 		
 	}
 
+	@Override
+	public void fetchProfileFromKOLFile(String filepath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fetchFollowersFromKOLFile(String filepath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fetchTweetsFromKOLFile(String filepath) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

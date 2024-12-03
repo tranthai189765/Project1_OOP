@@ -98,8 +98,8 @@ public class KOLFollowerFetcher implements DataFetcherStrategy{
 	                                User user = new User(userProfileUrl);
 	                  
 	          
-	                                if( kol.hasFollower(user) == false) {
-	                                	kol.addFollower(user);
+	                                if( kol.hasFollower(user.getId()) == false) {
+	                                	kol.addFollower(user.getId());
 	                                	count++;
 	                                	lastWriteTime = Instant.now().getEpochSecond();
 	                                }
@@ -130,7 +130,7 @@ public class KOLFollowerFetcher implements DataFetcherStrategy{
 	                }
 	            }
 	            manager.updateFollowersForUser(kol.getId(), kol.getFollowers());
-	            manager.saveToJsonFile("te.json");
+	            manager.saveToDatabase();
 	        } catch (Exception e) {
 	            System.out.println("Lỗi trong phương thức fetchFollowers: " + e.getMessage());
 	            e.printStackTrace();
@@ -138,6 +138,24 @@ public class KOLFollowerFetcher implements DataFetcherStrategy{
 	    }
 	@Override
 	public void fetchTweets(User kol) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fetchProfileFromKOLFile(String filepath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fetchFollowersFromKOLFile(String filepath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fetchTweetsFromKOLFile(String filepath) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 
@@ -22,9 +22,11 @@ public class User extends Node {
     private String followersCount;
     private String description;
 
-    @JsonSerialize(contentUsing = FollowerIdSerializer.class)
-    private Set<User> followers;
-    private Set<User> following;
+
+    private Set<String> followers;
+
+
+    private Set<String> following;
      // Bỏ qua danh sách tweets khi serializing
     private Set<Tweet> tweets;
 
@@ -131,20 +133,20 @@ public class User extends Node {
     }
 
     // Getter và Setter cho Followers
-    public Set<User> getFollowers() {
+    public Set<String> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(Set<User> followers) {
+    public void setFollowers(Set<String> followers) {
         this.followers = followers;
     }
 
     // Getter và Setter cho Following
-    public Set<User> getFollowing() {
+    public Set<String> getFollowing() {
         return following;
     }
 
-    public void setFollowing(Set<User> following) {
+    public void setFollowing(Set<String> following) {
         this.following = following;
     }
 
@@ -158,22 +160,22 @@ public class User extends Node {
     }
 
     // Phương thức thêm follower
-    public void addFollower(User follower) {
-        followers.add(follower);
+    public void addFollower(String follower_id) {
+        followers.add(follower_id);
     }
     
-    public boolean hasFollower(User user) {
-        return followers.contains(user);
+    public boolean hasFollower(String follower_id) {
+        return followers.contains(follower_id);
     }
 
     // Phương thức thêm following
-    public void addFollowing(User followee) {
-        following.add(followee);
+    public void addFollowing(String followee_id) {
+        following.add(followee_id);
     }
 
     // Phương thức kiểm tra xem người dùng có theo dõi người khác không
     public boolean isFollowing(User user) {
-        return following.contains(user);
+        return following.contains(user.getId());
     }
     
     @Override
@@ -188,5 +190,24 @@ public class User extends Node {
     public int hashCode() {
         return Objects.hash(getId()); // Sử dụng ID để tạo hash
     }
+    @Override
+    public String toString() {
+        return "User{" +
+               "id='" + getId() + '\'' +
+               ", url='" + url + '\'' +
+               ", location='" + location + '\'' +
+               ", professionalCategory='" + professionalCategory + '\'' +
+               ", joinDate='" + joinDate + '\'' +
+               ", website='" + website + '\'' +
+               ", tweetCount='" + tweetCount + '\'' +
+               ", followingCount='" + followingCount + '\'' +
+               ", followersCount='" + followersCount + '\'' +
+               ", description='" + description + '\'' +
+               ", followers=" + followers.size() + " followers" +
+               ", following=" + following.size() + " following" +
+               ", tweets=" + tweets.size() + " tweets" +
+               '}';
+    }
+
 }
 

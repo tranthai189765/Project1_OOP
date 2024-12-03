@@ -22,7 +22,7 @@ public static void main( String[] args) {
         String password = "det@i1OOP2024";
         String email = "tranthai18976543@gmail.com";
         ConfigInterface config = new TwitterConfig();
-        DataManagerInterface manager = new TwitterDataManager();
+        DataManagerInterface manager = new TwitterDataManager("te.json");
 
         // Khởi tạo WebDriver
         WebDriver driver = new ChromeDriver();
@@ -31,17 +31,20 @@ public static void main( String[] args) {
         try {
             // Tạo đối tượng TwitterKOLFinder1
             TwitterLogin login = new TwitterLogin(username, password, email, config);
-
+            manager.loadFromDatabase();
+            System.out.println(manager.getUserById("user_BitcoinEcoSpace"));
+           // manager.saveToDatabase();
             // Tìm kiếm KOLs với hashtag #Blockchain
             login.login(driver);
             
             KOLFollowerFetcher fetch = new KOLFollowerFetcher(driver, manager, 20);
             KOLBasicInfoFetcher fetch1 = new KOLBasicInfoFetcher(driver, manager);
-            User Kol1 = new User("https://x.com/CitizenBitcoin");
-            User Kol2 = new User("https://x.com/DrBitcoinMD");
+            
+            User Kol1 = new User("https://x.com/BitcoinEcoSpace");
+            User Kol2 = new User("https://x.com/btcexplorers");
             fetch1.fetchProfile(Kol1);
-            fetch1.fetchProfile(Kol2);
-            fetch.fetchFollowers(Kol1);
+       
+         
             fetch.fetchFollowers(Kol2);
            // fetch.graph.display();
 

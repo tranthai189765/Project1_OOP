@@ -10,7 +10,7 @@ public class Main {
 
         // Tạo các đối tượng User và Tweet
         User user1 = new User("UserName1", "user1@example.com");
-        Tweet tweet1 = new Tweet("Tweet0007", user1);
+        Tweet tweet1 = new Tweet("Tweet0007", user1.getId());
         System.out.println(user1.getId() + "   "+ tweet1.getId() );
 
         // Thêm các đối tượng User và Tweet vào đồ thị

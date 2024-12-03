@@ -7,9 +7,11 @@ import java.util.Set;
 
 public interface DataManagerInterface {
     void addUserToDataBase(User user);
+    public User getUserById(String userId);
     void updatePostsForUser(String userId, Set<Tweet> tweets);
-    void updateFollowersForUser(String userId, Set<User> followers);
-    void saveToJsonFile(String filePath);
-    void loadFromJsonFile(String filePath);
+    void updateFollowersForUser(String userId, Set<String> followers);
+    void updateBasicInfoForUser(String userId, User updatedUser);
+    void saveToDatabase();
+    void loadFromDatabase();
     
 }

@@ -1,18 +1,17 @@
 package entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 
 import java.util.Set;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class Tweet extends Node {
 
-    @JsonSerialize(using = UserIdSerializer.class) // Serialize chỉ lấy `id` của `author`
-    private User author;
+  
+    private String author_id;
 
-    private Set<User> commentedBy;
+    private Set<String> commentedBy;
+    
     private String likeCount;
     private String viewCount;
     private String content;
@@ -24,24 +23,24 @@ public class Tweet extends Node {
         super();
     }
 
-    public Tweet(String id, User author) {
+    public Tweet(String id, String author_id) {
         super(id);
-        this.author = author;
+        this.author_id = author_id;
     }
 
-    public User getAuthor() {
-        return author;
+    public String getAuthorId() {
+        return author_id;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setAuthorId(String author_id) {
+        this.author_id = author_id;
     }
 
-    public Set<User> getCommentedBy() {
+    public Set<String> getCommentedBy() {
         return commentedBy;
     }
 
-    public void setCommentedBy(Set<User> commentedBy) {
+    public void setCommentedBy(Set<String> commentedBy) {
         this.commentedBy = commentedBy;
     }
 
