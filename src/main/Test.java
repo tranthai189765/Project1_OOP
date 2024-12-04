@@ -13,41 +13,32 @@ import manager.TwitterDataManager;
 import scraper.KOLBasicInfoFetcher;
 import scraper.KOLFollowerFetcher;
 import entities.User;
+import filehandler.FileHandlerInterface;
+import filehandler.TwitterFileHandler;
 
 public class Test {
 public static void main( String[] args) {
 		
         // Thông tin đăng nhập Twitter
+	    WebDriver driver = new ChromeDriver();
         String username = "Tranthaiabcabc";
         String password = "det@i1OOP2024";
         String email = "tranthai18976543@gmail.com";
         ConfigInterface config = new TwitterConfig();
         DataManagerInterface manager = new TwitterDataManager("te.json");
+        FileHandlerInterface filehandler = new TwitterFileHandler();
+        manager.loadFromDatabase();
 
         // Khởi tạo WebDriver
-        WebDriver driver = new ChromeDriver();
+        
    
         
         try {
-            // Tạo đối tượng TwitterKOLFinder1
-            TwitterLogin login = new TwitterLogin(username, password, email, config);
-            manager.loadFromDatabase();
-            System.out.println(manager.getUserById("user_BitcoinEcoSpace"));
-           // manager.saveToDatabase();
-            // Tìm kiếm KOLs với hashtag #Blockchain
-            login.login(driver);
-            
-            KOLFollowerFetcher fetch = new KOLFollowerFetcher(driver, manager, 20);
-            KOLBasicInfoFetcher fetch1 = new KOLBasicInfoFetcher(driver, manager);
-            
-            User Kol1 = new User("https://x.com/BitcoinEcoSpace");
-            User Kol2 = new User("https://x.com/btcexplorers");
-            fetch1.fetchProfile(Kol1);
-       
-         
-            fetch.fetchFollowers(Kol2);
-           // fetch.graph.display();
-
+        	TwitterLogin login = new TwitterLogin(username,password,email,config);
+        	login.login(driver);
+        	KOLBasicInfoFetcher fetch = new KOLBasicInfoFetcher(driver, manager, filehandler);
+        	fetch.fetchProfileFromKOLFile("all_user_links.txt");
+          
         } finally {
             // Đóng trình duyệt
             driver.quit();

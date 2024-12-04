@@ -26,6 +26,7 @@ public class KOLFollowerFetcher implements DataFetcherStrategy{
         this.manager = manager;
         this.maxFollowers = maxFollowers;
     }
+    
 
 	@Override
 	public void fetchProfile(User kol) {
@@ -38,7 +39,7 @@ public class KOLFollowerFetcher implements DataFetcherStrategy{
 		System.out.println("Fetching KOL followers...");
 		manager.addUserToDataBase(kol);
 		 try {
-	            driver.get(kol.getUrl());
+	            //driver.get(kol.getUrl());
 	            try {
 	                Thread.sleep(2000);
 	            } catch (InterruptedException e) {
@@ -129,6 +130,7 @@ public class KOLFollowerFetcher implements DataFetcherStrategy{
 	                    break;
 	                }
 	            }
+	          //  kol.getFollowers() = [A,B,C,D];
 	            manager.updateFollowersForUser(kol.getId(), kol.getFollowers());
 	            manager.saveToDatabase();
 	        } catch (Exception e) {
@@ -151,6 +153,14 @@ public class KOLFollowerFetcher implements DataFetcherStrategy{
 	@Override
 	public void fetchFollowersFromKOLFile(String filepath) {
 		// TODO Auto-generated method stub
+		// Ví dụ link nhận vào tiếp theo : abc.com
+		// User kol_dangdao = new User("abc.com")
+		// id = user_abc, url = abc.com, set followers = [], location
+		// Truy cập vào database
+		// kol_dangdao = manager.getUserById( kol_dangdao.getId())
+		// Thực hiện kiểm tra 
+		// Nếu như set followers của kol_dangdao rỗng ? (Ko đủ số lượng) -> đào thêm followers
+		// nếu như không rỗng or (đủ số lượng) -> ko đào, skip qua link Url khác trong filepath
 		
 	}
 

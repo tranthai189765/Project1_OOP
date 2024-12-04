@@ -175,4 +175,25 @@ public class TwitterDataManager implements DataManagerInterface {
 	    }
 	}
 
+	@Override
+	public boolean hasUser(String userId) {
+		// TODO Auto-generated method stub
+		String dict = userId;
+	    if (data.containsKey(dict)) {
+	        Optional<User> userOpt = data.get(dict).stream()
+	            .filter(user -> user.getId().equals(userId))
+	            .findFirst();
+
+	        if (userOpt.isPresent()) {
+	            return true; // Trả về User nếu tìm thấy
+	        } else {
+	            System.out.println("Không tìm thấy User: " + userId);
+	            return false; // Hoặc ném ngoại lệ tùy theo yêu cầu
+	        }
+	    } else {
+	        System.out.println("Không tìm thấy từ điển: " + dict);
+	        return false; // Hoặc ném ngoại lệ tùy theo yêu cầu
+	    }
+	}
+
 }

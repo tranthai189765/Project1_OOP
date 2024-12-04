@@ -9,6 +9,7 @@ public interface FileHandlerInterface {
 
     // Ghi các dòng vào file
     void writeElementsToFile(String filePath, Set<String> elements);
+    void writeStringtoFile(String filePath, String content);
 
     // Tạo file mới cho ngày hôm nay với định dạng YYYY-MM-DD_HH-MM-SS
     File createDailyFile(String model);
@@ -20,6 +21,8 @@ public interface FileHandlerInterface {
 	String getTotalDataFilePath();
 	
 	String getModelFilePath();
+	
+	String getProcessedDataFilePath();
 	
 
 }

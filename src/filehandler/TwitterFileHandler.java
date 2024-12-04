@@ -13,6 +13,7 @@ public class TwitterFileHandler implements FileHandlerInterface {
 	
     private static final String ALL_LINKS_FILE_PATH = "all_user_links.txt";
     private static final String HASHTAGS_FILE_PATH = "hashtags.txt";
+    private static final String ALL_KOLS_FILE_PATH = "kol_links.txt";
 
 	@Override
 	public Set<String> readElementsFromFile(String filePath) {
@@ -101,5 +102,25 @@ public class TwitterFileHandler implements FileHandlerInterface {
 
 	public String getModelFilePath() {
 		return HASHTAGS_FILE_PATH;
+	}
+
+	@Override
+	public void writeStringtoFile(String filePath, String content) {
+	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+	        writer.write(content);
+	        writer.newLine();
+	        writer.flush();
+	        System.out.println("Đã ghi nội dung vào file: " + filePath);
+	    } catch (IOException e) {
+	        System.out.println("Lỗi khi ghi nội dung vào file " + filePath);
+	        e.printStackTrace();
+	    }
+		
+	}
+
+	@Override
+	public String getProcessedDataFilePath() {
+		// TODO Auto-generated method stub
+		return ALL_KOLS_FILE_PATH;
 	}
 }

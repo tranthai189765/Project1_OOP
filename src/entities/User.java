@@ -18,9 +18,10 @@ public class User extends Node {
     private String joinDate;
     private String website;
     private String tweetCount;
-    private String followingCount;
-    private String followersCount;
+    private int followingCount;
+    private int followersCount;
     private String description;
+    private String kolType;
 
 
     private Set<String> followers;
@@ -33,6 +34,9 @@ public class User extends Node {
     // Constructor
     public User() {
         super();
+        this.followers = new HashSet<>();
+        this.following = new HashSet<>();
+        this.tweets = new HashSet<>();
     }
     
     public User(String id, String url) {
@@ -106,20 +110,20 @@ public class User extends Node {
     }
 
     // Getter và Setter cho Following Count
-    public String getFollowingCount() {
+    public int getFollowingCount() {
         return followingCount;
     }
 
-    public void setFollowingCount(String followingCount) {
+    public void setFollowingCount(int followingCount) {
         this.followingCount = followingCount;
     }
 
     // Getter và Setter cho Followers Count
-    public String getFollowersCount() {
+    public int getFollowersCount() {
         return followersCount;
     }
 
-    public void setFollowersCount(String followersCount) {
+    public void setFollowersCount(int followersCount) {
         this.followersCount = followersCount;
     }
 
@@ -208,6 +212,24 @@ public class User extends Node {
                ", tweets=" + tweets.size() + " tweets" +
                '}';
     }
+
+	public String getKolType() {
+		return kolType;
+	}
+
+	public void setKolType() {
+	    if (this.followersCount >= 1000000) {
+	        this.kolType = "Mega KOL (Celebrity)";
+	    } else if (this.followersCount >= 100000) {
+	        this.kolType = "Macro KOL";
+	    } else if (this.followersCount >= 10000) {
+	        this.kolType = "Micro KOL";
+	    } else if (this.followersCount >= 1000) {
+	        this.kolType = "Nano KOL";
+	    } else {
+	        this.kolType = "Non-KOL";  // Nếu followers dưới 1000
+	    }
+	}
 
 }
 

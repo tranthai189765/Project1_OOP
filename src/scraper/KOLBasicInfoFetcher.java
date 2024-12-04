@@ -1,5 +1,8 @@
 package scraper;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.Duration;
 
 
@@ -10,16 +13,21 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import entities.User;
+import filehandler.FileHandlerInterface;
 import manager.DataManagerInterface;
+import utils.utils;
 
 
 public class KOLBasicInfoFetcher implements DataFetcherStrategy {
-    private WebDriver driver;
+	private WebDriver driver;
     private DataManagerInterface manager;
+    private FileHandlerInterface filehandler;
 
-    public KOLBasicInfoFetcher(WebDriver driver, DataManagerInterface manager ) {
+    public KOLBasicInfoFetcher(WebDriver driver, DataManagerInterface manager, FileHandlerInterface filehandler ) {
         this.driver = driver;
         this.manager = manager;
+        this.filehandler = filehandler;
+       
     }
 
 
@@ -27,9 +35,13 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	public void fetchProfile(User kol) {
 	    // TODO Auto-generated method stub
 	    System.out.println("Fetching KOL profile...");
-	    manager.addUserToDataBase(kol);
 	    driver.get(kol.getUrl());
-	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+	    try {
+	        Thread.sleep(10000); // Tạm dừng 3 giây
+	    } catch (InterruptedException e) {
+	        e.printStackTrace();
+	    }
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
 	    
 	    try {
 	        // Lấy số lượng bài đăng
@@ -95,24 +107,42 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 
 	    try {
 	        // Lấy số lượng following của user
-	    	WebElement followingCountElement = driver.findElement(By.cssSelector("a[href$='/following'] span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
+	        WebElement followingCountElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[href$='/following'] span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3")));
 	        String followingCountText  = followingCountElement.getText();
-	        //System.out.println("Số lượng following của KOL: " + followingCount);
-	        kol.setFollowingCount(followingCountText);
+	        int followingCount = utils.convertTextToInteger(followingCountText);
+	        kol.setFollowingCount(followingCount);
 	    } catch (Exception e) {
 	        System.out.println("Không tìm thấy số lượng following của user.");
+	        
 	    }
 
 	    try {
 	        // Lấy số lượng followers của user
-	    	WebElement followersCountElement = driver.findElement(By.cssSelector("a[href$='/verified_followers'] span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
+	    	WebElement followersCountElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[href$='/verified_followers'] span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3")));
 	        String followersCountText = followersCountElement.getText();
-	        kol.setFollowersCount(followersCountText);
+	        int followersCount = utils.convertTextToInteger(followersCountText);
+	        kol.setFollowersCount(followersCount);
+	        if(followersCount >= 5000) {
+	        	
+	        	filehandler.writeStringtoFile(filehandler.getProcessedDataFilePath(), kol.getUrl());
+	        	System.out.println("Đã ghi link: "+ kol.getUrl() + "vào " + filehandler.getProcessedDataFilePath());
+	        	
+	        }else {
+	        	System.out.println("Số lượng following không đủ. "+ followersCount + " Dừng xử lý user này: " + kol.getUrl());
+	        	return;
+	
+	        }
 	    } catch (Exception e) {
 	        System.out.println("Không tìm thấy số lượng followers của user.");
 	    }
-	    manager.updateBasicInfoForUser(kol.getId(), kol);
+	    kol.setKolType();
+	    if (!kol.getKolType().equals("Non-KOL")) {
+	    manager.addUserToDataBase(kol);
 	    manager.saveToDatabase();
+	    }
+	    else {
+	    	System.out.println("Không thực hiện cho user vào DataBase : " + kol.getUrl() );
+	    }
 	}
 
 
@@ -132,6 +162,36 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	@Override
 	public void fetchProfileFromKOLFile(String filepath) {
 		// TODO Auto-generated method stub
+        System.out.println("Đọc các liên kết từ file: " + filepath);
+        try (BufferedReader reader = new BufferedReader(new FileReader(filepath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.startsWith("https")) { // Kiểm tra nếu là đường dẫn hợp lệ
+                    System.out.println("Xử lý URL: " + line);
+                    User user = new User(line); // Tạo đối tượng User từ URL
+                    if(manager.hasUser(user.getId())==true) {
+                    	user = manager.getUserById(user.getId());
+                    	if(user.getTweetCount() == null || user.getTweetCount().isEmpty()) {
+                    		// Gọi fetchProfile để xử lý User
+                        	fetchProfile(user); 
+                        }else {
+                        	System.out.println("Thông tin cơ bản về User "+ user.getId() + " đã có trong database");
+                        }
+                    }else {
+                    	// Gọi fetchProfile để xử lý User
+                    	System.out.println("Chưa có thông tin gì về User " + user.getId());
+                    	fetchProfile(user); 
+                    }
+                    
+                            
+                } else {
+                    System.out.println("Bỏ qua dòng không hợp lệ: " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Có lỗi xảy ra khi đọc file: " + e.getMessage());
+        }
 		
 	}
 
