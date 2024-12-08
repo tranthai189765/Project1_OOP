@@ -1,7 +1,5 @@
 package entities;
 
-
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +15,7 @@ public class Tweet extends Node {
     // link : "x/abc.com" -> author_id = "user_abc"
 
     private Set<String> commentedBy;
+    private String url;
     
     private String likeCount;
     private String viewCount;
@@ -35,16 +34,36 @@ public class Tweet extends Node {
         this.author_id = author_id;
         this.commentedBy = new HashSet<>();
     }
-
-    public String getAuthorId() {
-        return author_id;
+    
+    // Tạo ID cho tweet từ URL
+    private static String generateID(String linkURL) {
+        String username = linkURL.substring(linkURL.indexOf("https://x.com/") + "https://x.com/".length(), linkURL.lastIndexOf("/status"));
+        String tweetId = linkURL.substring(linkURL.lastIndexOf("/") + 1);
+        return "tweet_" + username + "_" + tweetId;
     }
 
-    public void setAuthorId(String author_id) {
-        this.author_id = author_id;
+    // Constructor sử dụng URL
+    public Tweet(String url) {
+        this(generateID(url), extractAuthor_id(url)); // Gọi constructor với ID được tạo
     }
 
-    public Set<String> getCommentedBy() {
+    // Lấy author_id từ URL
+    private static String extractAuthor_id(String linkURL) {
+        if (linkURL != null && linkURL.contains("https://x.com/")) {
+            return "user_" + linkURL.substring(linkURL.indexOf("https://x.com/") + "https://x.com/".length(), linkURL.lastIndexOf("/status"));
+        }
+        return null; // Trả về null nếu URL không hợp lệ
+    }
+
+	public String getAuthor_id() {
+		return author_id;
+	}
+
+	public void setAuthor_id(String linkURL) {
+		this.author_id = extractAuthor_id(linkURL);
+	}
+
+	public Set<String> getCommentedBy() {
         return commentedBy;
     }
 
@@ -99,6 +118,15 @@ public class Tweet extends Node {
 	public void setCommentCount(String commentCount) {
 		this.commentCount = commentCount;
 	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 	@Override
 	public String toString() {
 	    return "Tweet{" +

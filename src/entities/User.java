@@ -171,6 +171,14 @@ public class User extends Node {
     public boolean hasFollower(String follower_id) {
         return followers.contains(follower_id);
     }
+    
+    public void addTweet(Tweet tweet) {
+    	tweets.add(tweet);
+    }
+    
+    public boolean hasTweet(Tweet tweet) {
+    	return tweets.contains(tweet);
+    }
 
     // Phương thức thêm following
     public void addFollowing(String followee_id) {
