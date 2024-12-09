@@ -1,0 +1,62 @@
+{
+  "user_Azmask_Channel" : [ {
+    "id" : "user_Azmask_Channel",
+    "url" : "https://x.com/Azmask_Channel",
+    "location" : null,
+    "professionalCategory" : null,
+    "joinDate" : null,
+    "website" : null,
+    "tweetCount" : null,
+    "followingCount" : 0,
+    "followersCount" : 0,
+    "description" : null,
+    "kolType" : null,
+    "followers" : [ ],
+    "following" : [ ],
+    "tweets" : [ {
+      "id" : "1801671278253981925",
+      "author_id" : "Azmask_Channel",
+      "commentedBy" : [ "AlqhalyYn", "Azmask_Channel", "KobtanP", "ibutikq", "HoaTong120872", "Airdropcu1010" ],
+      "url" : "https://x.com/Azmask_Channel/status/1801671278253981925",
+      "likeCount" : "27",
+      "viewCount" : "3,374",
+      "content" : " Introducing the AI Cloud Trading (ACT) Bot!\n\nAn autonomous system that analyzes market data in real-time, identifying and executing crypto arbitrage opportunities across multiple exchanges.\n\n Rent your ACT Bot today and start earning at http://azmask.com/act-bot",
+      "postedDate" : "2024-06-14T17:41:20.000Z",
+      "repostCount" : "167",
+      "commentCount" : "6"
+    }, {
+      "id" : "1860185681085235330",
+      "author_id" : "Azmask_Channel",
+      "commentedBy" : [ "Azmask_Channel" ],
+      "url" : "https://x.com/Azmask_Channel/status/1860185681085235330",
+      "likeCount" : "0",
+      "viewCount" : "73",
+      "content" : "Explore Long/Short Trading with AZMASK\n\nExperience seamless trading with our Delivery Contract. Trade popular cryptos with real-time TradingView charts.\n\nPractice Long/Short trading at http://azmask.com/trade/demo\n\nGenerate up to 95% profit per trade at http://azmask.com/trade",
+      "postedDate" : "2024-11-23T04:56:41.000Z",
+      "repostCount" : "0",
+      "commentCount" : "1"
+    }, {
+      "id" : "1853274721623953711",
+      "author_id" : "Azmask_Channel",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/Azmask_Channel/status/1853274721623953711",
+      "likeCount" : "0",
+      "viewCount" : "79",
+      "content" : " Enjoy Constant Daily Profits with ACT Bots! \n\nAutomatically execute arbitrage trades across multiple exchanges and generate up to $5,000 in monthly profits.\n\n View real-time trading reports at http://act.azmask.com\n\n Rent your ACT Bot now at http://azmask.com/act-bot#invest",
+      "postedDate" : "2024-11-04T03:15:00.000Z",
+      "repostCount" : "0",
+      "commentCount" : "0"
+    }, {
+      "id" : "1850754675739607057",
+      "author_id" : "Azmask_Channel",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/Azmask_Channel/status/1850754675739607057",
+      "likeCount" : "1",
+      "viewCount" : "47",
+      "content" : " AZMASK's Delivery Contract empowers traders of all experience levels to profit in both rising and falling markets.\n\nAchieve returns of up to 95% on each trade in as little as 38 seconds.\n\n Start growing your funds today at http://azmask.com/trade",
+      "postedDate" : "2024-10-28T04:21:14.000Z",
+      "repostCount" : "0",
+      "commentCount" : "0"
+    } ]
+  } ]
+}

@@ -1,0 +1,73 @@
+{
+  "user_ZIGChain" : [ {
+    "id" : "user_ZIGChain",
+    "url" : "https://x.com/ZIGChain",
+    "location" : null,
+    "professionalCategory" : null,
+    "joinDate" : null,
+    "website" : null,
+    "tweetCount" : null,
+    "followingCount" : 0,
+    "followersCount" : 0,
+    "description" : null,
+    "kolType" : null,
+    "followers" : [ ],
+    "following" : [ ],
+    "tweets" : [ {
+      "id" : "1865755081947369949",
+      "author_id" : "ZIGChain",
+      "commentedBy" : [ "kristof_lorant", "ZIGChain", "Spectre__AI", "Mustafa_Asri", "KhubaibArshad9" ],
+      "url" : "https://x.com/ZIGChain/status/1865755081947369949",
+      "likeCount" : "129",
+      "viewCount" : "6,021",
+      "content" : "Co-Founder or intern, #ZScore-Powered Wealth Managers deliver profits for all. \n\nPassive earning made effortless, anywhere, anytime with \n@zignaly\n. ",
+      "postedDate" : "2024-12-08T13:47:30.000Z",
+      "repostCount" : "23",
+      "commentCount" : "5"
+    }, {
+      "id" : "1865840108022206630",
+      "author_id" : "ZIGChain",
+      "commentedBy" : [ "kristof_lorant", "KhubaibArshad9", "ZIFChain" ],
+      "url" : "https://x.com/ZIGChain/status/1865840108022206630",
+      "likeCount" : "83",
+      "viewCount" : "5,333",
+      "content" : "Effortless Wealth Generation ",
+      "postedDate" : "2024-12-08T19:25:22.000Z",
+      "repostCount" : "11",
+      "commentCount" : "3"
+    }, {
+      "id" : "1856749499185594779",
+      "author_id" : "ZIGChain",
+      "commentedBy" : [ "Dutchkingpin", "anasssg19", "ThijmenZim", "6az___", "flexontop1", "_Quivira", "Runbot_io", "Spectre__AI", "GalaxyTrading_", "allthewinners1", "Olayiwola0010", "EylemCulculoglu", "Coinqueror666", "stasherkyra", "gemsmorro", "im_kehkashan", "dawhalesclub", "MessierM87", "bluredeyes23", "Sela020_", "Irun_Rigs", "Corgil_", "HeyMan1428487", "Folakemodinat", "Sstinoo_", "NYCryptoYoshi", "SamwellRealex", "LIMENO101", "brbordallo", "CryptoGodJohn", "WalletFullaNFTs", "CryptoWizardd", "KhubaibArshad9", "KAPOTHEGOAT01", "Jude1149968", "AdewaleOla45137", "jaimiefr_", "tobiloba_j18922", "JordyBakkes", "Billy_Eth0", "Harvey271828", "SIDKEAG", "Tombeast124", "BKasapB", "Daitaro01", "mrsmuskwife", "dennisss75", "leap_wallet", "BitcoinRaider", "prama_fouts", "AndrewCryptoHQ", "Souff_0", "iahbarii7", "T85th9246", "PhilippeAha", "Sohailshah111", "worldoffisher", "Tcryptobuilder", "RahmanKamo72750", "Liswaspp", "Bitcoin_Buddah", "KarstenTervoort", "fey_stasher", "ShillXMaster", "AkaBull_", "itsvright", "Duncan_P12", "ProTraderHakan", "linq_ai", "Md_Rasel1988", "AlaminS11750", "IkramHassan97", "zignaly", "CryptoRemoNL", "imro66160", "DokCrypto", "Abdoubench96779", "Betonblokk", "alhajigail", "fadi1415085", "PureVPNcom", "Steve_Cryptoo", "Merchant91", "GodxBull", "vayani_amin", "H_1_V_E", "Vanhelsing1920", "ZIGChain", "neiro", "Spartan_Crypt0", "OuakiliOss", "Anbessa100", "iamsahilwani_", "moontropica", "shakalamin259" ],
+      "url" : "https://x.com/ZIGChain/status/1856749499185594779",
+      "likeCount" : "859",
+      "viewCount" : "636.4K",
+      "content" : "Strategic Alliance: \n@PureVPNcom\n x \n@ZIGChain\nThe global cybersecurity powerhouse, PureVPN, officially joins forces with ZIGChain as the FIRST OFFICIAL VALIDATOR and strategic growth partner! \n\nWith access to 2 million+ paying customers across 180 countries and an extensive DePIN network of 6,000+ servers, PureVPN is primed to amplify ZIGChain’s reach and influence. Bringing unmatched expertise in privacy, cybersecurity, distributed infrastructure & DePIN, this alliance supercharges cybersecurity for #ZIGChain developers and the community alike. \n\nSee who's been talking about PureVPN ",
+      "postedDate" : "2024-11-13T17:22:32.000Z",
+      "repostCount" : "309",
+      "commentCount" : "113"
+    }, {
+      "id" : "1865800375095132248",
+      "author_id" : "ZIGChain",
+      "commentedBy" : [ "Kyuubi_eth", "NYCryptoYoshi", "ThijmenZim", "_Quivira", "Steve_Cryptoo", "RCarringto50159", "Za3oshi", "worldoffisher", "BulanDandang", "kenshin_crypto", "LeonGardne82898", "Bullify_X", "FrancisGil48536", "gemsmorro", "AkaBull_", "DefiGameChanger", "Alaouicapital", "Mabarkan94", "JohnnyZcash", "ZIGsChain", "Tobiloba754", "AlyssaSant27728" ],
+      "url" : "https://x.com/ZIGChain/status/1865800375095132248",
+      "likeCount" : "189",
+      "viewCount" : "16K",
+      "content" : "Here are the highlights from ZIGChain-sponsored \n@CryptoFightWeek\n's #CFN5 \n\nBlood, sweat, and glory set the stage for a night of unforgettable moments. \n\nZIGChain is making waves all around the world! ",
+      "postedDate" : "2024-12-08T16:47:28.000Z",
+      "repostCount" : "32",
+      "commentCount" : "26"
+    }, {
+      "id" : "1865803372378374213",
+      "author_id" : "ARafayGadit",
+      "commentedBy" : [ "WesLee911", "anasssg19", "BashxCode", "EylemCulculoglu", "ARafayGadit", "faheem_megland", "baki0i", "Mustafa_Asri", "smw000001", "Mr__Kovacs", "patelshivank", "amansaiofficial", "Edo1803", "RietjeM27", "eth_splinter", "cryptoLOIRE", "LordOfAlts", "KhubaibArshad9", "FriedrichBtc", "Wally_Crypto_", "LangezaalTim", "DefiGameChanger", "Maroc033", "cryptophateeh", "0x0zu", "No_Moonboy_Here", "Kevin491689641", "halit_eyup" ],
+      "url" : "https://x.com/ARafayGadit/status/1865803372378374213",
+      "likeCount" : "324",
+      "viewCount" : "43.8K",
+      "content" : "Thank you \n@binance\n for the invitation to watch #Formula1! Awesome vibe & always great to see \n@_RichardTeng\n smiling! ",
+      "postedDate" : "2024-12-08T16:59:23.000Z",
+      "repostCount" : "55",
+      "commentCount" : "38"
+    } ]
+  } ]
+}

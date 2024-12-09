@@ -7,13 +7,21 @@ import java.util.Set;
 public class Tweet extends Node {
 
   
-    private String author_id;
+    private final String author_id;
     
     //Url
     // User author = new User(Url)
     // author_id = author.id;
     // link : "x/abc.com" -> author_id = "user_abc"
 
+    // set author_id (String url)
+    // {
+    //    this.author_id = extract(url);
+    //
+    
+    // set author_id (String id)
+    //{  this.author_id = id;
+    //
     private Set<String> commentedBy;
     private String url;
     
@@ -27,6 +35,7 @@ public class Tweet extends Node {
     public Tweet() {
         super();
         this.commentedBy = new HashSet<>();
+        this.author_id = null;
     }
 
     public Tweet(String id, String author_id) {
@@ -59,9 +68,6 @@ public class Tweet extends Node {
 		return author_id;
 	}
 
-	public void setAuthor_id(String linkURL) {
-		this.author_id = extractAuthor_id(linkURL);
-	}
 
 	public Set<String> getCommentedBy() {
         return commentedBy;

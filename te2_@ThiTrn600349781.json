@@ -1,0 +1,18 @@
+{
+  "user_ExchangeOptimus" : [ {
+    "id" : "user_ExchangeOptimus",
+    "url" : "https://x.com/ExchangeOptimus",
+    "location" : null,
+    "professionalCategory" : null,
+    "joinDate" : null,
+    "website" : null,
+    "tweetCount" : null,
+    "followingCount" : 0,
+    "followersCount" : 0,
+    "description" : null,
+    "kolType" : null,
+    "followers" : [ ],
+    "following" : [ ],
+    "tweets" : [ ]
+  } ]
+}

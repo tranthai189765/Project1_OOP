@@ -39,7 +39,7 @@ public class TwitterDataManager implements DataManagerInterface {
             data.get(dict).add(user);
             System.out.println("Đã thêm User: " + user.getUrl());
         } else {
-            System.out.println("User đã tồn tại: " + user.getUrl());
+            System.out.println("User đã tồn tại: " + user.getUrl() +  " trong " + this.databasefilepath);
         }
 	}
 

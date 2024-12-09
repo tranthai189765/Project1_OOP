@@ -1,0 +1,73 @@
+{
+  "user_ExchangeOptimus" : [ {
+    "id" : "user_ExchangeOptimus",
+    "url" : "https://x.com/ExchangeOptimus",
+    "location" : null,
+    "professionalCategory" : null,
+    "joinDate" : null,
+    "website" : null,
+    "tweetCount" : null,
+    "followingCount" : 0,
+    "followersCount" : 0,
+    "description" : null,
+    "kolType" : null,
+    "followers" : [ ],
+    "following" : [ ],
+    "tweets" : [ {
+      "id" : "1293353537611526144",
+      "author_id" : "ExchangeOptimus",
+      "commentedBy" : [ "BigTinKC", "ExchangeOptimus", "wizofinanz", "Tanitan88", "Cryptojuiced", "RyanXander3", "ifidlfkalfi" ],
+      "url" : "https://x.com/ExchangeOptimus/status/1293353537611526144",
+      "likeCount" : "19",
+      "viewCount" : "0",
+      "content" : "We'd love to take on more listings of some new or established projects looking to grow their community. We've got some very unique and beneficial listing features ready to help you \nTag a project below who might be up for a new listing! #crypto #cryptoexchange #cex #listings",
+      "postedDate" : "2020-08-12T01:08:07.000Z",
+      "repostCount" : "7",
+      "commentCount" : "13"
+    }, {
+      "id" : "1291441609142345730",
+      "author_id" : "ExchangeOptimus",
+      "commentedBy" : [ "ExchangeOptimus" ],
+      "url" : "https://x.com/ExchangeOptimus/status/1291441609142345730",
+      "likeCount" : "8",
+      "viewCount" : "0",
+      "content" : "$TRADE is now live in #OptimusExchange!\n\nAvailable pairs: \nhttps://trade.optimus.exchange/trade/TRADE-ETH\nhttps://trade.optimus.exchange/trade/TRADE-OPEX…\n\nDYOR\n@UniTradeApp\n #DEFI",
+      "postedDate" : "2020-08-06T18:30:48.000Z",
+      "repostCount" : "3",
+      "commentCount" : "1"
+    }, {
+      "id" : "1292476862501986304",
+      "author_id" : "ExchangeOptimus",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/ExchangeOptimus/status/1292476862501986304",
+      "likeCount" : "16",
+      "viewCount" : "0",
+      "content" : "$ESOS Trading Competition Is Starting This Week!\n\n90,000 $OPEX and 45,000 $ESOS will be given as prizes!\n  \nRead all about it: https://optimus.exchange/esos-trading-competition/…",
+      "postedDate" : "2020-08-09T15:04:31.000Z",
+      "repostCount" : "9",
+      "commentCount" : "1"
+    }, {
+      "id" : "1293157739733164038",
+      "author_id" : "ExchangeOptimus",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/ExchangeOptimus/status/1293157739733164038",
+      "likeCount" : null,
+      "viewCount" : null,
+      "content" : null,
+      "postedDate" : null,
+      "repostCount" : null,
+      "commentCount" : null
+    }, {
+      "id" : "1292527180958892033",
+      "author_id" : "ExchangeOptimus",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/ExchangeOptimus/status/1292527180958892033",
+      "likeCount" : null,
+      "viewCount" : null,
+      "content" : null,
+      "postedDate" : null,
+      "repostCount" : null,
+      "commentCount" : null
+    } ]
+  } ]
+}

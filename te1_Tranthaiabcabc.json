@@ -1,0 +1,73 @@
+{
+  "user_BricklayerDao" : [ {
+    "id" : "user_BricklayerDao",
+    "url" : "https://x.com/BricklayerDao",
+    "location" : null,
+    "professionalCategory" : null,
+    "joinDate" : null,
+    "website" : null,
+    "tweetCount" : null,
+    "followingCount" : 0,
+    "followersCount" : 0,
+    "description" : null,
+    "kolType" : null,
+    "followers" : [ ],
+    "following" : [ ],
+    "tweets" : [ {
+      "id" : "1865750370104000858",
+      "author_id" : "BricklayerDao",
+      "commentedBy" : [ "BricklayerDao", "rwa_io", "certified_ace3" ],
+      "url" : "https://x.com/BricklayerDao/status/1865750370104000858",
+      "likeCount" : "8",
+      "viewCount" : "220",
+      "content" : " Clock is Ticking! Secure your spot in Tier 1 pricing before it's too late. Early adopters gain exclusive benefits, including governance rights, yield generation, and more.\n\n Act now to be a pioneer in transforming real-world assets.\n\n Join the presale here now! https://presale.bricklayerdao.com\n\n#PresaleAlert #CryptoInvesting #BricklayerDAO #RealEstate #Tokenization #MRTR #RWA",
+      "postedDate" : "2024-12-08T13:28:46.000Z",
+      "repostCount" : "3",
+      "commentCount" : "3"
+    }, {
+      "id" : "1865740365741068312",
+      "author_id" : "BricklayerDao",
+      "commentedBy" : [ "bacty123", "FanTokens", "BricklayerDao", "Akere_me" ],
+      "url" : "https://x.com/BricklayerDao/status/1865740365741068312",
+      "likeCount" : "5",
+      "viewCount" : "226",
+      "content" : "Which #crypto #exchange you prefer for our token to be listed?\n\nComment best exchange ",
+      "postedDate" : "2024-12-08T12:49:01.000Z",
+      "repostCount" : "0",
+      "commentCount" : "4"
+    }, {
+      "id" : "1858480757536162090",
+      "author_id" : "BricklayerDao",
+      "commentedBy" : [ "Laris_houehanou", "pickpickernava", "victornawf2", "BricklayerDao", "Mercilina64", "Juni0r077", "B4ronRickS", "iKadmoss", "Babatunde1050", "GantiAkunWin29", "www_subsahu", "Kariwangi", "abcdcongratssss", "wononethousand", "KawanJihan", "Tchetty_", "0xliasaur", "NduwurDewe_Win", "hanavaonava", "Akere_me" ],
+      "url" : "https://x.com/BricklayerDao/status/1858480757536162090",
+      "likeCount" : "3.2K",
+      "viewCount" : "66.6K",
+      "content" : "It’s time! The $MRTR presale is officially LIVE \n\nYou can now grab Tier 1 tokens at a massive 80% discount over at https://presale.bricklayerdao.com\n\nRemember, when you stake your $MRTR, you’re not just holding tokens — you’re gaining governance rights, earning rewards, and getting dividends from the Quarry!\n\nDon’t wait too long — this deal won’t last forever\n\n#presale #RWA",
+      "postedDate" : "2024-11-18T12:01:56.000Z",
+      "repostCount" : "3.2K",
+      "commentCount" : "4K"
+    }, {
+      "id" : "1865814137949110503",
+      "author_id" : "LucaNetz",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/LucaNetz/status/1865814137949110503",
+      "likeCount" : "3.6K",
+      "viewCount" : "124.9K",
+      "content" : "The future is tokenized ",
+      "postedDate" : "2024-12-08T17:42:10.000Z",
+      "repostCount" : "323",
+      "commentCount" : "381"
+    }, {
+      "id" : "1865426612935864550",
+      "author_id" : "BricklayerDao",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/BricklayerDao/status/1865426612935864550",
+      "likeCount" : null,
+      "viewCount" : null,
+      "content" : null,
+      "postedDate" : null,
+      "repostCount" : null,
+      "commentCount" : null
+    } ]
+  } ]
+}

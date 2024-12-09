@@ -3,6 +3,7 @@ package scraper;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -11,21 +12,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import config.ConfigInterface;
-import config.TwitterConfig;
 import utils.utils;
 
 import entities.User;
 import entities.Tweet;
 
 import manager.DataManagerInterface;
-import manager.TwitterDataManager;
 import filehandler.FileHandlerInterface;
-import filehandler.TwitterFileHandler;
 
 public class KOLTweetFetcher implements DataFetcherStrategy {
 	private final WebDriver driver;
@@ -57,32 +52,26 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	@Override
     public void fetchTweets(User kol) {
         System.out.println("Fetching KOL profile...");
-        manager.addUserToDataBase(kol);
+   //     manager.addUserToDataBase(kol);
         try {
             driver.get(kol.getUrl());
-            Thread.sleep(3000); // Đợi tải trang
+            Thread.sleep(6000); // Đợi tải trang
             
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
             ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 600)");
 
             int count = 0;
             int stagnantScrollCount = 0;
-            long lastScrollHeight = 0;
-            long lastWriteTime = Instant.now().getEpochSecond();  // Lưu thời gian lần viết gần nhất
+            int previousTweetCount = 0;
+            Set<String> tweetLinks = new HashSet<>();
 
-            while (count < maxTweets) {
+            while (tweetLinks.size() < maxTweets) {
                 try {
-                    List<WebElement> retryElements = driver.findElements(By.xpath("//span[contains(text(),'Retry') and contains(@class, 'css-1jxf684')]"));
                     List<WebElement> tweets = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("article[data-testid='tweet']")));
 
-                    long currentTime = Instant.now().getEpochSecond();
-
-                    if (!tweets.isEmpty() && currentTime - lastWriteTime > 300) {
-                        System.out.println("Không có dữ liệu mới trong 5 phút. Chương trình tự động dừng.");
-                        break;
-                    } else if (tweets.isEmpty() || !retryElements.isEmpty()) {
+                    if (tweets.isEmpty()) {
                         System.out.println("Không có dữ liệu mới trong 15 giây. Đợi 30s để tải thêm tweets...");
-                        Thread.sleep(180000); // Đợi thêm để tải tweet mới
+                        Thread.sleep(6000); // Đợi thêm để tải tweet mới
 
                         driver.navigate().refresh();
                     }
@@ -94,87 +83,53 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
                             List<WebElement> links = tweet.findElements(By.cssSelector("a[href*='/status/']"));
                             if (!links.isEmpty()) {
                                 String tweetUrl = links.get(0).getAttribute("href");
-                                
-                                Tweet tweetCollected = new Tweet(tweetUrl);
-                                tweetCollected.setUrl(tweetUrl);
-
-                                if (!kol.hasTweet(tweetCollected)) {
-                                    kol.addTweet(tweetCollected);
-                                    count++;
-                                    lastWriteTime = Instant.now().getEpochSecond();  // Cập nhật thời gian viết
+                                if(!tweetLinks.contains(tweetUrl)) {
+                                	tweetLinks.add(tweetUrl);
+                                	System.out.println("Đã ghi nhận: "+tweetUrl);
                                 }
-                                System.out.println("COUNT = " + count);
+                                System.out.println("COUNT = " + tweetLinks.size());
                             }
                         } catch (Exception e) {
                             System.out.println("Không thể lấy tweets của người dùng này: " + e.getMessage());
                             e.printStackTrace();
                         }
                     }
+                    
+                    if(tweetLinks.size() == previousTweetCount) {
+                    	stagnantScrollCount++;
+                    	System.out.println("Cuộn check lần thứ: "+stagnantScrollCount);
+                    	if (stagnantScrollCount >= 50) {
+                    		System.out.println("Hết dữ liệu");
+                    		break;
+                    	}
+                    }else {
+                    	stagnantScrollCount = 0;
+                    }
+                    
+                    previousTweetCount = tweetLinks.size();
 
                     // Cuộn trang tiếp để tải thêm tweet
                     JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-                    long currentScrollHeight = (long) jsExecutor.executeScript("return document.body.scrollHeight");
-                    jsExecutor.executeScript("window.scrollBy(0, 100)");
-                    Thread.sleep(2000);
-                    
-                    if (currentScrollHeight == lastScrollHeight) {
-                        stagnantScrollCount++;
-                        if (stagnantScrollCount >= 3) {
-                            System.out.println("Không thể cuộn thêm, quay lại trang trước.");
-                            driver.navigate().back();
-                            Thread.sleep(2000);
-                            driver.navigate().refresh();
-                            Thread.sleep(2000);
-                            break; // Thoát vòng lặp
-                        }
-                    } else {
-                        stagnantScrollCount = 0; // Reset nếu cuộn thành công
-                    }
-                    lastScrollHeight = currentScrollHeight; // Cập nhật chiều cao cuộn cuối cùng
+                    jsExecutor.executeScript("window.scrollBy(0, 800)");
+                    Thread.sleep(6000);
                 } catch (Exception e) {
                     System.out.println("Lỗi trong vòng lặp xử lý tweets: " + e.getMessage());
                     e.printStackTrace();
                     break;
                 }
             }
-            int countDown = 0;
-            for (Tweet tweet : kol.getTweets()) {
-            	if(countDown == 0) {
-            		Thread.sleep(10000);
-            		driver.navigate().refresh();
-            		Thread.sleep(2000);
+            for(String tweetLink : tweetLinks) {
+            	System.out.println("Đang xử lý cho: " + tweetLink);
+            	String tweetId = tweetLink.substring(tweetLink.lastIndexOf("/") + 1);
+            	String username = tweetLink.substring(tweetLink.indexOf("https://x.com/") + "https://x.com/".length(), tweetLink.lastIndexOf("/status"));
+            	Tweet tweet = new Tweet(tweetId, username);
+            	System.out.println(tweet.getAuthor_id());
+            	tweet.setUrl(tweetLink);
+            	if (!kol.hasTweet(tweet)) {
+            		kol.addTweet(tweet);
             	}
-            	if (countDown == 22) {
-            		Thread.sleep(60000);
-            		driver.navigate().refresh();
-            		Thread.sleep(2000);
-            		countDown = 1;
-            	}
-                tweet.setAuthor_id(tweet.getUrl());
-                System.out.println("Đã cập nhật authorid: " + tweet.getAuthor_id());
-            	extractInfo(tweet);
-            	driver.get(tweet.getUrl());
-            	Thread.sleep(3000);
-            	int numComments = utils.convertTextToInteger(tweet.getCommentCount());
-            	if (numComments == 0) {
-            		continue;
-            	}
-            	Set<String> repliers = replierURL(tweet.getUrl(), maxComments, numComments);
-            	if (repliers.isEmpty()) {
-            		System.out.println("Không hiển thị người trả lời");
-            		tweet.addCommentedUser("Không hiển thị");
-            	} else {
-            		for (String replier : repliers) {
-                     	if (tweet.hasCommented(replier.substring(replier.indexOf("https://x.com/") + "https://x.com/".length())) == false) {
-                     		tweet.addCommentedUser(replier.substring(replier.indexOf("https://x.com/") + "https://x.com/".length()));
-                     		System.out.println("Đã thêm người comment có URL: " + replier);
-                     	}
-                    }
-            	}
-            	countDown++;
-            	Thread.sleep(6000);
             }
-
+            proceedTweets(kol);
             manager.updatePostsForUser(kol.getId(), kol.getTweets());
             manager.saveToDatabase();
         } catch (Exception e) {
@@ -182,6 +137,80 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
             e.printStackTrace();
         }
     }
+	
+	private void scrollUntilGetRepliers() {
+		while (true) {
+            try {
+            	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+                // Kiểm tra xem phần tử có hiển thị trên trang hay không
+                WebElement repliers = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("article[data-testid='tweet']")));
+
+                // Nếu tất cả các phần tử đã hiển thị, dừng cuộn
+                if (repliers.isDisplayed()) {
+                    break;
+                }
+            } catch (Exception e) {
+                // Nếu các phần tử chưa xuất hiện, cuộn trang
+            	((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 100)");
+                try {
+                    Thread.sleep(10000); // Đợi thêm thời gian cho trang tải các phần tử mới
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+	}
+	
+	private void proceedTweets(User kol) {
+		Set<Tweet> tweets = kol.getTweets();
+		int countRespawn = 1;
+		for (Tweet tweet : tweets) {
+			System.out.println("Đang xử lý tweet cho user: " + kol.getId());
+			driver.get(tweet.getUrl());
+			try {
+				Thread.sleep(6000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (countRespawn % 20 == 0) {
+				driver.navigate().refresh();
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				countRespawn = 1;
+			}
+			countRespawn++;
+			System.out.println("CountRespawn: " + countRespawn);
+			extractInfo(tweet);
+			int numComments = utils.convertTextToInteger(tweet.getCommentCount());
+        	if (numComments == 0) {
+        		continue;
+        	}
+			scrollUntilGetRepliers();
+			Set<String> repliers = replierURL(kol, tweet.getUrl(), maxComments, numComments);
+        	if (repliers.isEmpty()) {
+        		System.out.println("Không hiển thị người trả lời");
+        		tweet.addCommentedUser("Không hiển thị");
+        	} else {
+        		for (String replier : repliers) {
+                 	if (tweet.hasCommented(replier.substring(replier.indexOf("https://x.com/") + "https://x.com/".length())) == false) {
+                 		tweet.addCommentedUser(replier.substring(replier.indexOf("https://x.com/") + "https://x.com/".length()));
+                 		System.out.println("Đã thêm người comment có URL: " + replier);
+                 	}
+                }
+        	}
+        	try {
+				Thread.sleep(15000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	private String returnReply(Tweet tweet) {
 		String replyCountText = "0"; // Mặc định là 0 nếu không tìm thấy
@@ -309,7 +338,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
     	
     	if (!retryElements.isEmpty()) {
             try {
-                driver.navigate().back();
+                driver.navigate().refresh();
                 System.out.println("Đã nhấn nút Retry để tải nội dung.");
             } catch (Exception e) {
                 System.out.println("Lỗi khi nhấn nút Retry: " + e.getMessage());
@@ -325,43 +354,55 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 		tweet.setPostedDate(returnTime(tweet));
 	}
 	
-	private Set<String> replierURL(String tweetUrl, int maxComments, int numComments) {
+	private Set<String> replierURL(User kol, String tweetUrl, int maxComments, int numComments) {
 	    Set<String> replierLinks = new HashSet<>();
-	    driver.get(tweetUrl); // Mở trang tweet
-	    try {
-	        Thread.sleep(3000);  // Đợi 3 giây
-	    } catch (InterruptedException e) {
-	        System.out.println("Lỗi khi đợi thời gian: " + e.getMessage());
-	        Thread.currentThread().interrupt();  // Giữ lại trạng thái gián đoạn
-	    }
-
 	    int needComments = Math.min(maxComments, numComments); // Số comment cần lấy
 	    int count = 0;
 	    int stagnantScrollCount = 0; // Đếm số lần cuộn không tìm thấy phần tử mới
-	    int previousTweetCount = 0; // Số lượng tweet trước lần cuộn cuối
-	    
-	    try {
-	    	while (count < needComments) {
-	    		// Cuộn xuống để tải thêm người comment
-	            ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 1000)");
+	    int previousTweetCount = 0; // Số lượng bài viết trước lần cuộn cuối
+	    boolean isFirstElementSkipped = false; // Đánh dấu nếu đã bỏ qua phần tử đầu tiên
+	    int numSeenDicoverMore = 0;
 
-	            // Tìm các bài viết comment
-	            List<WebElement> repliers = driver.findElements(By.cssSelector("article[data-testid='tweet']"));
-	            if (repliers.isEmpty()) {
-	            	driver.navigate().back();
-		            try {
-		                Thread.sleep(3000);  // Đợi 3 giây
-		            } catch (InterruptedException e) {
-		                System.out.println("Lỗi khi đợi thời gian: " + e.getMessage());
-		                Thread.currentThread().interrupt();  // Giữ lại trạng thái gián đoạn
-		            }
-		            return replierLinks;  // Quay lại nếu tweet đã bị xoá
+	    try {
+	    
+	        while (count < needComments) {
+	            // Kiểm tra và nhấn nút "Show more" nếu có
+	            // Cuộn xuống để tải thêm nội dung
+	            ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 800)");
+	            Thread.sleep(3000);
+	            List<WebElement> showMoreButtons = driver.findElements(By.xpath("//button[contains(@class, 'css-175oi2r') and contains(., 'Show')]"));
+	            if (!showMoreButtons.isEmpty()) {
+	                try {
+	                    WebElement showMoreButton = showMoreButtons.get(0); // Lấy nút đầu tiên
+	                    showMoreButton.click();
+	                    System.out.println("Đã nhấn nút 'Show more' để tải thêm repliers.");
+	                    Thread.sleep(3000); // Chờ nội dung tải xong
+	                } catch (Exception e) {
+	                    System.out.println("Không thể nhấn nút 'Show more': " + e.getMessage());
+	                }
 	            }
-	            
-	            // Kiểm tra nếu không có thêm phần tử mới
-	            if (repliers.size() == previousTweetCount) {
+
+	            WebElement discoverMoreHeading = null;
+	            try {
+	                discoverMoreHeading = driver.findElement(By.xpath("//h2[contains(., 'Discover more')]"));
+	                System.out.println("Thấy Discover More rồi nhe !!!");
+	                numSeenDicoverMore ++;
+	            } catch (Exception e) {
+	                System.out.println("Không tìm thấy phần tử 'Discover more'. Bỏ qua bước này.");
+	            }
+
+	            List<WebElement> articles;
+	            if (discoverMoreHeading != null) {
+	                articles = driver.findElements(By.xpath(
+	                    "//article[starts-with(@aria-labelledby, '') and preceding-sibling::h2[contains(., 'Discover more')]]"
+	                ));
+	            } else {
+	                articles = driver.findElements(By.xpath("//article[starts-with(@aria-labelledby, '')]"));
+	            }
+
+	            if (articles.size() == previousTweetCount) {
 	                stagnantScrollCount++;
-	                if (stagnantScrollCount >= 2) { // Nếu không tìm thấy mới sau 2 lần cuộn
+	                if (stagnantScrollCount >= 7) {
 	                    System.out.println("Không tìm thấy thêm người comment, dừng cuộn.");
 	                    break;
 	                }
@@ -369,42 +410,50 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	                stagnantScrollCount = 0; // Reset nếu tìm thấy phần tử mới
 	            }
 
-	            previousTweetCount = repliers.size(); // Cập nhật số lượng tweet trước
-	            
-	            // Duyệt qua từng replier và lấy URL
-	            for (WebElement replier : repliers) {
+	            previousTweetCount = articles.size(); // Cập nhật số lượng bài viết trước
+
+	            // Lấy URL của từng replier
+	            System.out.println("Bắt đầu duyệt nhé !!!");
+	            for (WebElement article : articles) {
 	                if (count >= needComments) {
 	                    break;
 	                }
 	                try {
-	                    List<WebElement> links = replier.findElements(By.cssSelector("a[href*='/']"));
-	                    if (!links.isEmpty()) {
-	                        String userProfileUrl = links.get(0).getAttribute("href");
-	                        if (!replierLinks.contains(userProfileUrl)) {
-	                            replierLinks.add(userProfileUrl);
-	                            count++;
-	                            System.out.println("Đã thêm người dùng: " + userProfileUrl);
-	                        }
+	                    WebElement avatar = article.findElement(By.xpath(".//*[@data-testid='Tweet-User-Avatar']"));
+	                    String userProfileUrl = avatar.findElement(By.tagName("a")).getAttribute("href");
+
+	                    if (!isFirstElementSkipped) {
+	                        // Bỏ qua phần tử đầu tiên
+	                        isFirstElementSkipped = true;
+	                        System.out.println("Bỏ qua người dùng đầu tiên: " + userProfileUrl);
+	                        continue;
 	                    }
+
+	                    if (replierLinks.add(userProfileUrl)) { // Chỉ thêm nếu chưa tồn tại
+	                        count++;
+	                        System.out.println("Đã thêm người dùng: " + userProfileUrl);
+	                    }
+
+	                } catch (NoSuchElementException e) {
+	                    System.out.println("Không thể tìm thấy avatar trong bài viết này.");
 	                } catch (Exception e) {
-	                    System.out.println("Không thể lấy URL của người comment: " + e.getMessage());
+	                    System.out.println("Lỗi khi lấy URL người comment: " + e.getMessage());
 	                }
 	            }
-	    	}
-	    } catch (Exception e) {
-	    	System.out.println("Lỗi trong quá trình lấy danh sách người comment: " + e.getMessage());
-	        e.printStackTrace();
-	    } finally {
-	        driver.navigate().back(); // Quay lại trang trước
-	        try {
-	            Thread.sleep(2000); // Chờ trang tải lại
-	        } catch (InterruptedException e) {
-	            System.out.println("Lỗi trong quá trình chờ quay lại: " + e.getMessage());
-	            Thread.currentThread().interrupt();
+	            if (numSeenDicoverMore==2) {
+	                System.out.println("Thấy rồi, dừng cuộn nhé !");
+	                break;
+	            }
 	        }
+	    } catch (InterruptedException e) {
+	        System.out.println("Lỗi trong quá trình xử lý: " + e.getMessage());
+	        Thread.currentThread().interrupt(); // Giữ lại trạng thái gián đoạn
+	    } finally {
+	        System.out.println("Kết thúc quá trình thu thập danh sách người comment.");
 	    }
 	    return replierLinks;
 	}
+
 		
 	@Override
 	public void fetchProfileFromKOLFile(String filepath) {
@@ -427,7 +476,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
     		return;
     	}else {
     		for (String kolLink : kolLinks) {
-    			if(countUp == 6) {
+    			if(countUp == 7) {
     				System.out.println("Đã đủ 7 KOLs, đăng nhập lại.");
     				return;
     			}
@@ -441,16 +490,23 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
     				fetchTweets(processKOL);
     				countUp++;
     			}else {
-    				System.out.println("Đã đủ ?");
     				continue;
     			}
     			try {
-					Thread.sleep(6000);
+					Thread.sleep(60000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}    			
     		}
     	}
+	}
+	public boolean isElementPresent(String xpath) {
+	    try {
+	        driver.findElement(By.xpath(xpath));
+	        return true; // Phần tử tồn tại
+	    } catch (Exception e) {
+	        return false; // Phần tử không tồn tại
+	    }
 	}
 }
