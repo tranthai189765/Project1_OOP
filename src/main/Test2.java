@@ -16,6 +16,7 @@ import scraper.KOLTweetFetcher;
 import entities.User;
 import filehandler.FileHandlerInterface;
 import filehandler.TwitterFileHandler;
+import scraper.KOLTweetFetcher;
 
 public class Test2 {
 public static void main( String[] args) {
@@ -30,10 +31,13 @@ public static void main( String[] args) {
         FileHandlerInterface filehandler = new TwitterFileHandler();
         manager.loadFromDatabase();
         try {
-        	TwitterLogin login = new TwitterLogin(username,password,email,config);
-        	login.login(driver);
-        	KOLTweetFetcher fetch = new KOLTweetFetcher(driver, manager, 2,1,  filehandler);
-        	fetch.fetchTweetsFromKOLFile("Untitled1.txt");
+        	TwitterLogin lo = new TwitterLogin(username, password, email, config);
+        	lo.login(driver);
+        	KOLTweetFetcher fetch = new KOLTweetFetcher(driver, manager, 40, 30, filehandler);
+        	driver.get("https://x.com/I_amDorris/status/1864678894982295880");
+        	System.out.println(fetch.replierURL(new User(), "https://x.com/I_amDorris/status/1864678894982295880", 40, 40));
+
+        	
         } finally {
             // Đóng trình duyệt
             driver.quit();

@@ -354,13 +354,14 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 		tweet.setPostedDate(returnTime(tweet));
 	}
 	
-	private Set<String> replierURL(User kol, String tweetUrl, int maxComments, int numComments) {
+	public Set<String> replierURL(User kol, String tweetUrl, int maxComments, int numComments) {
 	    Set<String> replierLinks = new HashSet<>();
 	    int needComments = Math.min(maxComments, numComments); // Số comment cần lấy
 	    int count = 0;
 	    int stagnantScrollCount = 0; // Đếm số lần cuộn không tìm thấy phần tử mới
 	    int previousTweetCount = 0; // Số lượng bài viết trước lần cuộn cuối
 	    boolean isFirstElementSkipped = false; // Đánh dấu nếu đã bỏ qua phần tử đầu tiên
+	    WebElement firstUserElement = null; // Lưu phần tử đầu tiên
 	    int numSeenDicoverMore = 0;
 
 	    try {
@@ -393,9 +394,9 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 
 	            List<WebElement> articles;
 	            if (discoverMoreHeading != null) {
-	                articles = driver.findElements(By.xpath(
-	                    "//article[starts-with(@aria-labelledby, '') and preceding-sibling::h2[contains(., 'Discover more')]]"
+	                articles = driver.findElements(By.xpath("//h2[contains(., 'Discover more')]/preceding::article"
 	                ));
+	                System.out.println("Bug ở load user sau khi thấy Discover More");
 	            } else {
 	                articles = driver.findElements(By.xpath("//article[starts-with(@aria-labelledby, '')]"));
 	            }
@@ -419,13 +420,28 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	                    break;
 	                }
 	                try {
+	                	
+	                	boolean isAd = !article.findElements(By.xpath(".//*[contains(text(), 'Ad ')]")).isEmpty();
+	                	if (isAd) {
+	                	    System.out.println("Bỏ qua quảng cáo.");
+	                	    continue;
+	                	}
+	                    
 	                    WebElement avatar = article.findElement(By.xpath(".//*[@data-testid='Tweet-User-Avatar']"));
 	                    String userProfileUrl = avatar.findElement(By.tagName("a")).getAttribute("href");
+	                    
 
 	                    if (!isFirstElementSkipped) {
-	                        // Bỏ qua phần tử đầu tiên
+	                        // Lưu phần tử đầu tiên
+	                        firstUserElement = article;
 	                        isFirstElementSkipped = true;
 	                        System.out.println("Bỏ qua người dùng đầu tiên: " + userProfileUrl);
+	                        continue;
+	                    }
+
+	                    // Kiểm tra nếu phần tử hiện tại trùng với phần tử đầu tiên
+	                    if (article.equals(firstUserElement)) {
+	                        System.out.println("Người dùng này trùng với người đầu tiên, bỏ qua.");
 	                        continue;
 	                    }
 
@@ -451,6 +467,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	    } finally {
 	        System.out.println("Kết thúc quá trình thu thập danh sách người comment.");
 	    }
+	    manager.saveToDatabase();
 	    return replierLinks;
 	}
 
