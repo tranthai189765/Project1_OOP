@@ -13,6 +13,7 @@ import manager.TwitterDataManager;
 import scraper.KOLBasicInfoFetcher;
 import scraper.KOLFollowerFetcher;
 import scraper.KOLTweetFetcher;
+import entities.Tweet;
 import entities.User;
 import filehandler.FileHandlerInterface;
 import filehandler.TwitterFileHandler;
@@ -34,8 +35,9 @@ public static void main( String[] args) {
         	TwitterLogin lo = new TwitterLogin(username, password, email, config);
         	lo.login(driver);
         	KOLTweetFetcher fetch = new KOLTweetFetcher(driver, manager, 40, 30, filehandler);
-        	driver.get("https://x.com/dreem_metaverse/status/1563107736866267136");
-        	System.out.println(fetch.replierURL(new User(), "https://x.com/dreem_metaverse/status/1563107736866267136", 40, 40));
+        	//driver.get("https://x.com/web3wikis/status/1865076493841486056");
+        	//System.out.println(fetch.replierURL(new User(), "https://x.com/web3wikis/status/1865076493841486056", 60, 60));
+        	fetch.extractInfo(new Tweet("https://x.com/web3wikis/status/1865076493841486056"));
 
         	
         } finally {
