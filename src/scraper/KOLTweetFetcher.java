@@ -381,7 +381,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
     }
 	
 	public void extractInfo(Tweet tweet) {
-		driver.get("https://x.com/web3wikis/status/1865076493841486056");
+		driver.get(tweet.getUrl());
 		List<WebElement> retryElements = driver.findElements(By.xpath("//span[contains(text(),'Retry') and contains(@class, 'css-1jxf684')]"));
     	
     	if (!retryElements.isEmpty()) {

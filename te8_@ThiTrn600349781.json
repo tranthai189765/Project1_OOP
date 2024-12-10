@@ -1,0 +1,95 @@
+{
+  "user_web3soltutorial" : [ {
+    "id" : "user_web3soltutorial",
+    "url" : "https://x.com/web3soltutorial",
+    "location" : null,
+    "professionalCategory" : null,
+    "joinDate" : null,
+    "website" : null,
+    "tweetCount" : null,
+    "followingCount" : 0,
+    "followersCount" : 0,
+    "description" : null,
+    "kolType" : null,
+    "followers" : [ ],
+    "following" : [ ],
+    "tweets" : [ {
+      "id" : "1860525810232205708",
+      "author_id" : "PoliticalPrism_",
+      "commentedBy" : [ "MarioNawfal" ],
+      "url" : "https://x.com/PoliticalPrism_/status/1860525810232205708",
+      "likeCount" : "192",
+      "viewCount" : "2,481",
+      "content" : "JOE ROGAN: WHAT THEY HAVE DONE TO L.A. IN SUCH A SHORT TIME IS SHOCKING\n\n“It’s like, what they've done to that city {LA} in a short amount of time is shocking. \n\nI never thought it would go that bad that fast.\n\nAnd it's, the way it is now is bizarre. \n\nYeah, the, the, uh, I",
+      "postedDate" : "2024-11-24T03:28:14.000Z",
+      "repostCount" : "5",
+      "commentCount" : "7"
+    }, {
+      "id" : "1858591784076554644",
+      "author_id" : "newmoneynotold",
+      "commentedBy" : [ "BillyM2k" ],
+      "url" : "https://x.com/newmoneynotold/status/1858591784076554644",
+      "likeCount" : "446",
+      "viewCount" : "1,688",
+      "content" : "elon: electric cars good\nthe left: elon bad electric cars bad \n\nelon: space travel good \nthe left: elon bad space travel bad \n\nelon: free speech good \nthe left: elon bad free speech bad \n\nelon: reducing government waste good \nthe left: elon bad reducing government waste bad",
+      "postedDate" : "2024-11-18T19:23:06.000Z",
+      "repostCount" : "1",
+      "commentCount" : "15"
+    }, {
+      "id" : "1860627916285005826",
+      "author_id" : "PoliticalPrism_",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/PoliticalPrism_/status/1860627916285005826",
+      "likeCount" : "1.1K",
+      "viewCount" : "50.2K",
+      "content" : "This is why most triple A games suck these days",
+      "postedDate" : "2024-11-24T10:13:58.000Z",
+      "repostCount" : "4",
+      "commentCount" : "17"
+    }, {
+      "id" : "1858611780483719295",
+      "author_id" : "newmoneynotold",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/newmoneynotold/status/1858611780483719295",
+      "likeCount" : null,
+      "viewCount" : null,
+      "content" : null,
+      "postedDate" : null,
+      "repostCount" : null,
+      "commentCount" : null
+    }, {
+      "id" : "1860759634190975048",
+      "author_id" : "Walker0x_",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/Walker0x_/status/1860759634190975048",
+      "likeCount" : null,
+      "viewCount" : null,
+      "content" : null,
+      "postedDate" : null,
+      "repostCount" : null,
+      "commentCount" : null
+    }, {
+      "id" : "1860796454987551173",
+      "author_id" : "halymz",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/halymz/status/1860796454987551173",
+      "likeCount" : null,
+      "viewCount" : null,
+      "content" : null,
+      "postedDate" : null,
+      "repostCount" : null,
+      "commentCount" : null
+    }, {
+      "id" : "1860024146127913157",
+      "author_id" : "321Blocknomad",
+      "commentedBy" : [ ],
+      "url" : "https://x.com/321Blocknomad/status/1860024146127913157",
+      "likeCount" : null,
+      "viewCount" : null,
+      "content" : null,
+      "postedDate" : null,
+      "repostCount" : null,
+      "commentCount" : null
+    } ]
+  } ]
+}
