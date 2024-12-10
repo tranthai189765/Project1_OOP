@@ -60,7 +60,7 @@ class TwitterDataFetcher1 implements Runnable {
             // Bắt đầu chu kỳ làm việc 2 tiếng
             driver = new ChromeDriver();
             ConfigInterface config = new TwitterConfig();
-            DataManagerInterface manager = new TwitterDataManager("te6_" + username + ".json");
+            DataManagerInterface manager = new TwitterDataManager("te7_" + username + ".json");
             FileHandlerInterface fileHandler = new TwitterFileHandler();
             manager.loadFromDatabase();
                 System.out.println("Đang đăng nhập tài khoản: " + username);

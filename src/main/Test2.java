@@ -34,8 +34,8 @@ public static void main( String[] args) {
         	TwitterLogin lo = new TwitterLogin(username, password, email, config);
         	lo.login(driver);
         	KOLTweetFetcher fetch = new KOLTweetFetcher(driver, manager, 40, 30, filehandler);
-        	driver.get("https://x.com/I_amDorris/status/1864678894982295880");
-        	System.out.println(fetch.replierURL(new User(), "https://x.com/I_amDorris/status/1864678894982295880", 40, 40));
+        	driver.get("https://x.com/dreem_metaverse/status/1563107736866267136");
+        	System.out.println(fetch.replierURL(new User(), "https://x.com/dreem_metaverse/status/1563107736866267136", 40, 40));
 
         	
         } finally {
