@@ -35,9 +35,9 @@ public static void main( String[] args) {
         	TwitterLogin lo = new TwitterLogin(username, password, email, config);
         	lo.login(driver);
         	KOLTweetFetcher fetch = new KOLTweetFetcher(driver, manager, 40, 30, filehandler);
-        	//driver.get("https://x.com/web3wikis/status/1865076493841486056");
-        	//System.out.println(fetch.replierURL(new User(), "https://x.com/web3wikis/status/1865076493841486056", 60, 60));
-        	fetch.extractInfo(new Tweet("https://x.com/web3wikis/status/1865076493841486056"));
+        	driver.get("https://x.com/0xLaughing/status/1862085274450493496");
+        	System.out.println(fetch.replierURL(new User(), "https://x.com/0xLaughing/status/1862085274450493496", 100, 100));
+        	//fetch.extractInfo(new Tweet("https://x.com/web3wikis/status/1865076493841486056"));
 
         	
         } finally {

@@ -213,95 +213,52 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	}
 	
 	private String returnReply(Tweet tweet) {
-	    String replyCountText = "0"; // Mặc định là 0 nếu không tìm thấy
-	    try {
-	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-	        
-	        // Tìm tất cả các phần tử reply button trong tweet
-	        List<WebElement> replyButtons = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("button[data-testid='reply']")));
-	        
-	        if (replyButtons.size() >= 2) {
-	            // Chọn phần tử thứ 2 nếu có ít nhất 2 phần tử
-	            WebElement secondReplyButton = replyButtons.get(1);
-	            WebElement replyCountElement = secondReplyButton.findElement(By.cssSelector("span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
-	            replyCountText = replyCountElement.getText(); // Số lượng trả lời
-	            System.out.println("Số lượng trả lời: " + replyCountText);
-	        } else if (replyButtons.size() == 1) {
-	            // Chọn phần tử đầu tiên nếu chỉ có 1 phần tử
-	            WebElement firstReplyButton = replyButtons.get(0);
-	            WebElement replyCountElement = firstReplyButton.findElement(By.cssSelector("span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
-	            replyCountText = replyCountElement.getText(); // Số lượng trả lời
-	            System.out.println("Số lượng trả lời: " + replyCountText);
-	        } else {
-	            System.out.println("Không tìm thấy phần tử reply cho tweet.");
-	        }
-	    } catch (Exception e) {
-	        System.out.println("Không tìm thấy số lượng trả lời cho tweet: ");
-	        replyCountText = "0";
-	    }
-	    return replyCountText;
+		String replyCountText = "0"; // Mặc định là 0 nếu không tìm thấy
+        try {
+        	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        	WebElement replyButton = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("button[data-testid='reply']")));
+        	WebElement replyCountElement = replyButton.findElement(By.cssSelector("span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
+            replyCountText = replyCountElement.getText(); // Số lượng trả lời
+            System.out.println("Số lượng trả lời: " + replyCountText);
+        } catch (Exception e) {
+            System.out.println("Không tìm thấy số lượng trả lời cho tweet: ");
+            replyCountText = "0";
+        }
+        return replyCountText;
 	}
-
+	
 	private String returnRepost(Tweet tweet) {
-	    String retweetCountText = "0"; // Mặc định là 0 nếu không tìm thấy
-	    try {
-	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-	        
-	        // Tìm tất cả các phần tử retweet button trong tweet
-	        List<WebElement> retweetButtons = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("button[data-testid='retweet']")));
-	        
-	        if (retweetButtons.size() >= 2) {
-	            // Chọn phần tử thứ 2 nếu có ít nhất 2 phần tử
-	            WebElement secondRetweetButton = retweetButtons.get(1);
-	            WebElement repostCountElement = secondRetweetButton.findElement(By.cssSelector("span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
-	            retweetCountText = repostCountElement.getText(); // Số lượng retweet
-	            System.out.println("Số lượng retweet: " + retweetCountText);
-	        } else if (retweetButtons.size() == 1) {
-	            // Chọn phần tử đầu tiên nếu chỉ có 1 phần tử
-	            WebElement firstRetweetButton = retweetButtons.get(0);
-	            WebElement repostCountElement = firstRetweetButton.findElement(By.cssSelector("span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
-	            retweetCountText = repostCountElement.getText(); // Số lượng retweet
-	            System.out.println("Số lượng retweet: " + retweetCountText);
-	        } else {
-	            System.out.println("Không tìm thấy phần tử retweet cho tweet.");
-	        }
-	    } catch (Exception e) {
-	        System.out.println("Không tìm thấy số lượng retweet cho tweet: ");
-	        retweetCountText = "0";
-	    }
-	    return retweetCountText;
+		// Lấy số lượng retweet
+        String retweetCountText = "0"; // Mặc định là 0 nếu không tìm thấy
+        try {
+        	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        	WebElement retweetButton = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("button[data-testid='retweet']")));
+        	WebElement repostCountElement = retweetButton.findElement(By.cssSelector("span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
+            retweetCountText = repostCountElement.getText(); // Số lượng retweet
+            System.out.println("Số lượng retweet: " + retweetCountText);
+        } catch (Exception e) {
+            System.out.println("Không tìm thấy số lượng retweet cho tweet: ");
+            retweetCountText = "0";
+        }
+        return retweetCountText;
 	}
-
+	
 	private String returnLike(Tweet tweet) {
-	    String likeCountText = "0"; // Mặc định là 0 nếu không tìm thấy
-	    try {
-	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-	        
-	        // Tìm tất cả các phần tử like button trong tweet
-	        List<WebElement> likeButtons = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("button[data-testid='like']")));
-	        
-	        if (likeButtons.size() >= 2) {
-	            // Chọn phần tử thứ 2 nếu có ít nhất 2 phần tử
-	            WebElement secondLikeButton = likeButtons.get(1);
-	            WebElement likeCountElement = secondLikeButton.findElement(By.cssSelector("span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
-	            likeCountText = likeCountElement.getText(); // Số lượng like
-	            System.out.println("Số lượng like: " + likeCountText);
-	        } else if (likeButtons.size() == 1) {
-	            // Chọn phần tử đầu tiên nếu chỉ có 1 phần tử
-	            WebElement firstLikeButton = likeButtons.get(0);
-	            WebElement likeCountElement = firstLikeButton.findElement(By.cssSelector("span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
-	            likeCountText = likeCountElement.getText(); // Số lượng like
-	            System.out.println("Số lượng like: " + likeCountText);
-	        } else {
-	            System.out.println("Không tìm thấy phần tử like cho tweet.");
-	        }
-	    } catch (Exception e) {
-	        System.out.println("Không tìm thấy số lượng like cho tweet: ");
-	        likeCountText = "0";
-	    }
-	    return likeCountText;
+		// Lấy số lượng like
+        String likeCountText = "0"; // Mặc định là 0 nếu không tìm thấy
+        try {
+        	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        	WebElement likeButton = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("button[data-testid='like']")));
+        	WebElement likeCountElement = likeButton.findElement(By.cssSelector("span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3"));
+            likeCountText = likeCountElement.getText(); // Số lượng like
+            System.out.println("Số lượng like: " + likeCountText);
+        } catch (Exception e) {
+            System.out.println("Không tìm thấy số lượng like cho tweet: ");
+            likeCountText = "0";
+        }
+		return likeCountText;
 	}
-
+	
 	private String returnView(Tweet tweet) {
 		// Lấy số lượt view
         String viewCountText = "0"; // Mặc định là 0 nếu không tìm thấy
@@ -317,45 +274,41 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
         }
         return viewCountText;
 	}
-
+	
 	private String returnContent(Tweet tweet) {
-	    String content = ""; // Mặc định là chuỗi rỗng nếu không tìm thấy
-	    try {
-	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-	        
-	        
-	        // Tìm phần tử nội dung tweet
-	        WebElement tweetElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[data-testid='tweetText']")));
-	        
-	        if (!tweetElement.isDisplayed()) {
-	            driver.navigate().refresh();
-	            tweetElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[data-testid='tweetText']")));
-	        }
-	        content = tweetElement.getText();
-	        System.out.println("Nội dung tweet: " + content);
-	    } catch (Exception e) {
-	        System.out.println("Không tìm thấy nội dung tweet cho tweet: ");
-	        content = "Tweet không có nội dung";
-	    }
-	    return content;
+		// Lấy nội dung tweet
+        String content = ""; // Mặc định là chuỗi rỗng nếu không tìm thấy
+        try {
+        	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        	WebElement tweetElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[data-testid='tweetText']")));
+        	if (!tweetElement.isDisplayed()) {
+        		driver.navigate().refresh();
+        		tweetElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[data-testid='tweetText']")));
+        	}
+        	content = tweetElement.getText();
+            System.out.println("Nội dung tweet: " + content); 
+        } catch (Exception e) {
+            System.out.println("Không tìm thấy nội dung tweet cho tweet: ");
+            content = "Tweet không có nội dung";
+        }
+        return content;
 	}
-
+	
 	private String returnTime(Tweet tweet) {
-	    String tweetDate = ""; // Mặc định là chuỗi rỗng nếu không tìm thấy
-	    try {
-	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-	        
-	        // Lấy thời gian đăng tweet
-	        WebElement timeElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[contains(@class, 'css-146c3p1')]//a//time")));
-	        tweetDate = timeElement.getAttribute("datetime"); // Lấy giá trị thuộc tính datetime
-	        System.out.println("Ngày đăng tweet: " + tweetDate);
-	    } catch (Exception e) {
-	        System.out.println("Không tìm thấy ngày đăng tweet cho tweet: ");
-	        tweetDate = "Error";
-	    }
-	    return tweetDate;
+		// Lấy ngày đăng tweet
+        String tweetDate = ""; // Mặc định là chuỗi rỗng nếu không tìm thấy
+        try {
+        	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+            WebElement timeElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[contains(@class, 'css-146c3p1')]//a//time")));
+            tweetDate = timeElement.getAttribute("datetime"); // Lấy giá trị thuộc tính datetime
+            System.out.println("Ngày đăng tweet: " + tweetDate);
+        } catch (Exception e) {
+            System.out.println("Không tìm thấy ngày đăng tweet cho tweet: ");
+            tweetDate = "Error";
+        } 
+        return tweetDate;
 	}
-
+	
 	
     private void scrollUntilElementsVisible() {
         while (true) {
@@ -420,17 +373,19 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	            ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 800)");
 	            Thread.sleep(2000);
 	      
-	            try {
-	                List<WebElement> showMoreButtons = driver.findElements(By.xpath("//button[contains(@class, 'css-175oi2r') and contains(., 'Show more')]"));
-	                if (!showMoreButtons.isEmpty()) {
-	                    WebElement showMoreButton = showMoreButtons.get(0); // Lấy nút đầu tiên
-	                    showMoreButton.click();
-	                    System.out.println("Đã nhấn nút 'Show more' để tải thêm repliers.");
+	            try { 
+	                // Thay đổi XPath để tìm kiếm văn bản "Show" bên trong <span> thay vì trực tiếp trong <button>
+	                List<WebElement> showButtons = driver.findElements(By.xpath("//button[contains(@class, 'css-175oi2r')]//span[normalize-space(text())='Show']"));
+	                if (!showButtons.isEmpty()) {
+	                    WebElement showButton = showButtons.get(0); // Lấy nút đầu tiên
+	                    showButton.click();
+	                    System.out.println("Đã nhấn nút 'Show' để tải thêm repliers.");
 	                    Thread.sleep(3000); // Chờ nội dung tải xong
 	                }
 	            } catch (Exception e) {
-	                System.out.println("Không thể nhấn nút 'Show more': " + e.getMessage());
+	                System.out.println("Không thể nhấn nút 'Show': " + e.getMessage());
 	            }
+
 
 	            // Xử lý nút "Show probable spam"
 	            try {
@@ -456,7 +411,8 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 
 	            List<WebElement> articles;
 	            if (discoverMoreHeading != null) {
-	            	articles = driver.findElements(By.xpath("//button[@data-testid='tweetButtonInline' and .//span[text()='Reply']]//following::article[preceding::h2[contains(., 'Discover more')]]"));
+	                articles = driver.findElements(By.xpath("//h2[contains(., 'Discover more')]/preceding::article"
+	                ));
 	                System.out.println("Bug ở load user sau khi thấy Discover More");
 	            } else {
 	                articles = driver.findElements(By.xpath("//article[starts-with(@aria-labelledby, '')]"));
@@ -475,42 +431,40 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	            previousTweetCount = articles.size(); // Cập nhật số lượng bài viết trước
 
 	            // Lấy URL của từng replier
-	            WebElement firstElement = null;
-
 	            System.out.println("Bắt đầu duyệt nhé !!!");
 	            for (WebElement article : articles) {
 	                if (count >= needComments) {
 	                    break;
 	                }
 	                try {
-	                    boolean isAd = !article.findElements(By.xpath(".//*[contains(text(), 'Ad ')]")).isEmpty();
-	                    if (isAd) {
-	                        System.out.println("Bỏ qua quảng cáo.");
+	                	
+	                	boolean isAd = !article.findElements(By.xpath(".//*[contains(text(), 'Ad ')]")).isEmpty();
+	                	if (isAd) {
+	                	    System.out.println("Bỏ qua quảng cáo.");
+	                	    continue;
+	                	}
+	                    
+	                    WebElement avatar = article.findElement(By.xpath(".//*[@data-testid='Tweet-User-Avatar']"));
+	                    String userProfileUrl = avatar.findElement(By.tagName("a")).getAttribute("href");
+	                    
+
+	                    if (!isFirstElementSkipped) {
+	                        // Lưu phần tử đầu tiên
+	                        firstUserElement = article;
+	                        isFirstElementSkipped = true;
+	                        System.out.println("Bỏ qua người dùng đầu tiên: " + userProfileUrl);
 	                        continue;
 	                    }
 
-	                    WebElement avatar = article.findElement(By.xpath(".//*[@data-testid='Tweet-User-Avatar']"));
-	                    String userProfileUrl = avatar.findElement(By.tagName("a")).getAttribute("href");
+	                    // Kiểm tra nếu phần tử hiện tại trùng với phần tử đầu tiên
+	                    if (article.equals(firstUserElement)) {
+	                        System.out.println("Người dùng này trùng với người đầu tiên, bỏ qua.");
+	                        continue;
+	                    }
 
-	                    // Nếu chưa thêm phần tử đầu tiên
-	                    if (firstElement == null) {
-	                        // Lưu lại WebElement của phần tử đầu tiên
-	                        firstElement = article;
-
-	                        // Thêm phần tử đầu tiên vào replierLinks
-	                        if (replierLinks.add(userProfileUrl)) {
-	                            count++;
-	                            System.out.println("Đã thêm người dùng đầu tiên: " + userProfileUrl);
-	                        }
-	                    } else {
-	                        // Nếu phần tử hiện tại xuất hiện sau phần tử đầu tiên
-	                        if (isElementAfter(firstElement, article)) {
-	                            // Thêm phần tử sau vào replierLinks nếu chưa tồn tại
-	                            if (replierLinks.add(userProfileUrl)) {
-	                                count++;
-	                                System.out.println("Đã thêm người dùng: " + userProfileUrl);
-	                            }
-	                        }
+	                    if (replierLinks.add(userProfileUrl)) { // Chỉ thêm nếu chưa tồn tại
+	                        count++;
+	                        System.out.println("Đã thêm người dùng: " + userProfileUrl);
 	                    }
 
 	                } catch (NoSuchElementException e) {
@@ -519,8 +473,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	                    System.out.println("Lỗi khi lấy URL người comment: " + e.getMessage());
 	                }
 	            }
-	            
-	            if (numSeenDicoverMore==2) {
+	            if (numSeenDicoverMore==3) {
 	                System.out.println("Thấy rồi, dừng cuộn nhé !");
 	                break;
 	            }
