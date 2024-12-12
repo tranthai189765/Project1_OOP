@@ -23,12 +23,9 @@ public class Test5 {
     public static void main(String[] args) {
         // Thông tin tài khoản
         String[][] accounts = {     
-                {"Tranthaiabcabc", "det@i1OOP2024", "tranthai18976543@gmail.com"},
+                {"@ThuyLinh62474", "det@i1OOP2024", "tranthai18976543@gmail.com"},
                 {"@ThiTrn600349781", "det@i1OOP2024", "tranthai189765@gmail.com"},
                 {"@QucThiTrn174803", "det@i1OOP2024", "nocturnett7@gmail.com"},
-                {"@ThuyLinh62474", "det@i1OOP2024", "thuylinhtran311@gmail.com"},
-                {"@json00906", "det@i1OOP", "json00906@gmail.com"},
-                {"DoKanDien69", "det@i1OOP", "Pokerlyface@gmail.com"}
         };
 
         // Khởi tạo và chạy 2 thread
@@ -62,7 +59,7 @@ class TwitterDataFetcher1 implements Runnable {
             // Bắt đầu chu kỳ làm việc 2 tiếng
             driver = new ChromeDriver();
             ConfigInterface config = new TwitterConfig();
-            DataManagerInterface manager = new TwitterDataManager("te10_" + username + ".json");
+            DataManagerInterface manager = new TwitterDataManager("te11_" + username + ".json");
             FileHandlerInterface fileHandler = new TwitterFileHandler();
             manager.loadFromDatabase();
                 System.out.println("Đang đăng nhập tài khoản: " + username);
@@ -70,7 +67,7 @@ class TwitterDataFetcher1 implements Runnable {
                 login.login(driver);
                 System.out.println("Đăng nhập thành công: " + username);
 
-                KOLTweetFetcher fetch = new KOLTweetFetcher(driver, manager, 40, 30, fileHandler);
+                KOLTweetFetcher fetch = new KOLTweetFetcher(driver, manager, 30, 30, fileHandler);
                 System.out.println("Bắt đầu thu thập dữ liệu cho: " + username);
 
                 fetch.fetchTweetsFromKOLFile("kol_" + username + ".txt");

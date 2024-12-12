@@ -520,7 +520,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
     			}
     			processKOL = manager.getUserById(processKOL.getId());
     			Set<Tweet> tweets = processKOL.getTweets();
-    			if (tweets.size() < maxTweets) {
+    			if (tweets.size() < 2) {
     				fetchTweets(processKOL);
     				countUp++;
     			}else {
