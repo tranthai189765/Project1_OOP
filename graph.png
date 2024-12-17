@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gexf xmlns="http://gexf.net/1.3" version="1.3" xmlns:viz="http://gexf.net/1.3/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://gexf.net/1.3 http://gexf.net/1.3/gexf.xsd">
+  <meta lastmodifieddate="2024-12-14">
+    <creator>Apache NetBeans Platform Dev (Build {0})</creator>
+    <title></title>
+    <description></description>
+  </meta>
+  <graph defaultedgetype="directed" mode="static">
+    <nodes>
+      <node id="user_1" label="User 1">
+        <viz:position x="-127.548096" y="65.3572"/>
+      </node>
+      <node id="tweet_1" label="Tweet 1">
+        <viz:position x="-128.48656" y="69.138626"/>
+      </node>
+      <node id="user_2" label="User 2">
+        <viz:position x="-130.26314" y="72.49146"/>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="0" source="user_1" target="tweet_1"/>
+      <edge id="1" source="tweet_1" target="user_2"/>
+    </edges>
+  </graph>
+</gexf>

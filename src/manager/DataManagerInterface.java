@@ -3,6 +3,8 @@ package manager;
 import entities.Tweet;
 import entities.User;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface DataManagerInterface {
@@ -14,5 +16,7 @@ public interface DataManagerInterface {
     void updateBasicInfoForUser(String userId, User updatedUser);
     void saveToDatabase();
     void loadFromDatabase();
-    
+    public Map<String, List<User>> getData();
+    public List<String> getUserIds();
+	String getDatabasefilepath();
 }

@@ -6,7 +6,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class TwitterFileHandler implements FileHandlerInterface {
@@ -117,10 +123,105 @@ public class TwitterFileHandler implements FileHandlerInterface {
 	    }
 		
 	}
+	public void writeListStringToFile(String filePath, Set<String> content) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            for (String element : content) {
+                writer.write(element);
+                writer.newLine();
+            }
+            writer.flush();
+            System.out.println("Đã ghi danh sách nội dung vào file: " + filePath);
+        } catch (IOException e) {
+            System.out.println("Lỗi khi ghi danh sách nội dung vào file " + filePath);
+            e.printStackTrace();
+        }
+    }
 
 	@Override
 	public String getProcessedDataFilePath() {
 		// TODO Auto-generated method stub
 		return ALL_KOLS_FILE_PATH;
 	}
+	
+    public static List<String> splitFile(String inputFile, int n) throws IOException {
+        // Đọc tất cả các dòng từ file đầu vào
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        }
+
+        // Kiểm tra điều kiện chia file
+        if (n <= 0 || lines.size() < n) {
+            throw new IllegalArgumentException("Số lượng file con phải nhỏ hơn hoặc bằng số dòng trong file gốc và lớn hơn 0.");
+        }
+
+        // Tính toán số dòng mỗi file nhỏ (phần dư sẽ được phân bổ đều)
+        int linesPerFile = lines.size() / n;
+        int extraLines = lines.size() % n;
+
+        // Lấy timestamp hiện tại
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+        // Danh sách lưu đường dẫn các file con
+        List<String> filePaths = new ArrayList<>();
+
+        // Chia file thành n file nhỏ
+        int currentIndex = 0;
+        for (int i = 0; i < n; i++) {
+            // Số dòng trong file hiện tại
+            int currentFileLines = linesPerFile + (i < extraLines ? 1 : 0);
+
+            // Lấy các dòng cho file nhỏ
+            List<String> subLines = lines.subList(currentIndex, currentIndex + currentFileLines);
+
+            // Tạo tên file nhỏ
+            String outputFileName = timestamp + "_subfilefrom_" + new File(inputFile).getName();
+            outputFileName = outputFileName.replace(".txt", "_part" + (i + 1) + ".txt");
+
+            // Đường dẫn file nhỏ
+            File outputFile = new File(outputFileName);
+
+            // Ghi các dòng vào file nhỏ
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+                for (String subLine : subLines) {
+                    writer.write(subLine);
+                    writer.newLine();
+                }
+            }
+
+            // Thêm đường dẫn vào danh sách
+            filePaths.add(outputFile.getAbsolutePath());
+
+            // Cập nhật chỉ số dòng hiện tại
+            currentIndex += currentFileLines;
+        }
+
+        // Trả về danh sách đường dẫn các file nhỏ
+        return filePaths;
+    }
+    
+    public Map<String, String> getCredentialsFromFile(String filePath) {
+        Map<String, String> credentials = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim(); // Bỏ khoảng trắng thừa
+                if (line.startsWith("username:")) {
+                    credentials.put("username", line.substring("username:".length()).trim());
+                } else if (line.startsWith("password:")) {
+                    credentials.put("password", line.substring("password:".length()).trim());
+                } else if (line.startsWith("email:")) {
+                    credentials.put("email", line.substring("email:".length()).trim());
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Lỗi khi đọc file: " + e.getMessage());
+        }
+
+        return credentials;
+    }
 }

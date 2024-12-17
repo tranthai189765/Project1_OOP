@@ -28,7 +28,6 @@ public class User extends Node {
 
 
     private Set<String> following;
-     // Bỏ qua danh sách tweets khi serializing
     private Set<Tweet> tweets;
 
     // Constructor

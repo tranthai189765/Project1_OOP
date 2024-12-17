@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -108,15 +109,19 @@ public class TwitterDataManager implements DataManagerInterface {
             File file = new File(this.databasefilepath);
             if (file.exists()) {
                 data = mapper.readValue(file, new TypeReference<Map<String, List<User>>>() {});
-                System.out.println("Dữ liệu đã được tải từ file JSON.");
+                System.out.println("Dữ liệu đã được tải từ file JSON " + this.databasefilepath);
             } else {
-                System.out.println("File JSON không tồn tại, tạo mới.");
+                System.out.println("File JSON "+ this.databasefilepath  + " không tồn tại, tạo mới.");
             }
         } catch (IOException e) {
             System.err.println("Lỗi khi tải file JSON: " + e.getMessage());
         }
 	}
 
+
+	public String getDatabasefilepath() {
+		return databasefilepath;
+	}
 
 	@Override
 	public void updateBasicInfoForUser(String userId, User updatedUser) {
@@ -195,5 +200,20 @@ public class TwitterDataManager implements DataManagerInterface {
 	        return false; // Hoặc ném ngoại lệ tùy theo yêu cầu
 	    }
 	}
+
+	@Override
+	public Map<String, List<User>> getData() {
+		// TODO Auto-generated method stub
+		return this.data;
+	}
+
+	@Override
+	public List<String> getUserIds() {
+        return data.values().stream()
+                   .flatMap(List::stream)
+                   .map(User::getId)
+                   .collect(Collectors.toList());
+    }
+		
 
 }

@@ -1,10 +1,12 @@
 package scraper;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.HashSet;
 
 
@@ -12,8 +14,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import config.ConfigInterface;
 import utils.utils;
 
 import entities.User;
@@ -21,38 +26,24 @@ import entities.Tweet;
 
 import manager.DataManagerInterface;
 import filehandler.FileHandlerInterface;
+import filehandler.TwitterFileHandler;
 
 public class KOLTweetFetcher implements DataFetcherStrategy {
-	private final WebDriver driver;
-	private final DataManagerInterface manager;
+	private final DataManagerInterface localManager;
 	private final int maxTweets;
 	private final int maxComments;
-	private final FileHandlerInterface fileHandler;
+	private final ConfigInterface config;
 
-    public KOLTweetFetcher(WebDriver driver, DataManagerInterface manager, int maxTweets, int maxComments, FileHandlerInterface fileHandler) {
-        this.driver = driver;
-        this.manager = manager;
-        this.maxTweets = maxTweets;
-        this.maxComments = maxComments;
-        this.fileHandler = fileHandler;
+    public KOLTweetFetcher(ConfigInterface config) {
+        this.config = config;
+        this.localManager = config.getLocalManager();
+        this.maxTweets = config.getMaxTweets();
+        this.maxComments = config.getMaxComments();
     }
 
-	@Override
-	public void fetchProfile(User kol) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void fetchFollowers(User kol) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-    public void fetchTweets(User kol) {
+    public void fetchTweets(WebDriver driver, User kol, DataManagerInterface remoteManager) {
         System.out.println("Fetching KOL profile...");
-   //     manager.addUserToDataBase(kol);
+        remoteManager.addUserToDataBase(kol);
         try {
             driver.get(kol.getUrl());
             Thread.sleep(6000); // Đợi tải trang
@@ -120,25 +111,26 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
             }
             for(String tweetLink : tweetLinks) {
             	System.out.println("Đang xử lý cho: " + tweetLink);
-            	String tweetId = tweetLink.substring(tweetLink.lastIndexOf("/") + 1);
-            	String username = tweetLink.substring(tweetLink.indexOf("https://x.com/") + "https://x.com/".length(), tweetLink.lastIndexOf("/status"));
-            	Tweet tweet = new Tweet(tweetId, username);
-            	System.out.println(tweet.getAuthor_id());
-            	tweet.setUrl(tweetLink);
+            	//String tweetId = tweetLink.substring(tweetLink.lastIndexOf("/") + 1);
+            	//String username = tweetLink.substring(tweetLink.indexOf("https://x.com/") + "https://x.com/".length(), tweetLink.lastIndexOf("/status"));
+            	//Tweet tweet = new Tweet(tweetId, username);
+            	//System.out.println(tweet.getAuthor_id());
+            	//tweet.setUrl(tweetLink);
+            	Tweet tweet = new Tweet(tweetLink);
             	if (!kol.hasTweet(tweet)) {
             		kol.addTweet(tweet);
             	}
             }
-            proceedTweets(kol);
-            manager.updatePostsForUser(kol.getId(), kol.getTweets());
-            manager.saveToDatabase();
+            proceedTweets(driver, remoteManager, kol);
+            remoteManager.updatePostsForUser(kol.getId(), kol.getTweets());
+            remoteManager.saveToDatabase();
         } catch (Exception e) {
             System.out.println("Lỗi trong phương thức fetchTweet: " + e.getMessage());
             e.printStackTrace();
         }
     }
 	
-	private void scrollUntilGetRepliers() {
+	private void scrollUntilGetRepliers(WebDriver driver) {
 		while (true) {
             try {
             	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
@@ -161,7 +153,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
         }
 	}
 	
-	private void proceedTweets(User kol) {
+	private void proceedTweets(WebDriver driver, DataManagerInterface remoteManager, User kol) {
 		Set<Tweet> tweets = kol.getTweets();
 		int countRespawn = 1;
 		for (Tweet tweet : tweets) {
@@ -185,13 +177,13 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 			}
 			countRespawn++;
 			System.out.println("CountRespawn: " + countRespawn);
-			extractInfo(tweet);
+			extractInfo(driver, tweet);
 			int numComments = utils.convertTextToInteger(tweet.getCommentCount());
         	if (numComments == 0) {
         		continue;
         	}
-			scrollUntilGetRepliers();
-			Set<String> repliers = replierURL(kol, tweet.getUrl(), maxComments, numComments);
+			scrollUntilGetRepliers(driver);
+			Set<String> repliers = replierURL(driver, kol, remoteManager, tweet.getUrl(), maxComments, numComments);
         	if (repliers.isEmpty()) {
         		System.out.println("Không hiển thị người trả lời");
         		tweet.addCommentedUser("Không hiển thị");
@@ -212,7 +204,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 		}
 	}
 	
-	private String returnReply(Tweet tweet) {
+	private String returnReply(WebDriver driver, Tweet tweet) {
 		String replyCountText = "0"; // Mặc định là 0 nếu không tìm thấy
         try {
         	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
@@ -227,7 +219,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
         return replyCountText;
 	}
 	
-	private String returnRepost(Tweet tweet) {
+	private String returnRepost(WebDriver driver, Tweet tweet) {
 		// Lấy số lượng retweet
         String retweetCountText = "0"; // Mặc định là 0 nếu không tìm thấy
         try {
@@ -243,7 +235,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
         return retweetCountText;
 	}
 	
-	private String returnLike(Tweet tweet) {
+	private String returnLike(WebDriver driver, Tweet tweet) {
 		// Lấy số lượng like
         String likeCountText = "0"; // Mặc định là 0 nếu không tìm thấy
         try {
@@ -259,7 +251,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 		return likeCountText;
 	}
 	
-	private String returnView(Tweet tweet) {
+	private String returnView(WebDriver driver, Tweet tweet) {
 		// Lấy số lượt view
         String viewCountText = "0"; // Mặc định là 0 nếu không tìm thấy
         try {
@@ -275,7 +267,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
         return viewCountText;
 	}
 	
-	private String returnContent(Tweet tweet) {
+	private String returnContent(WebDriver driver, Tweet tweet) {
 		// Lấy nội dung tweet
         String content = ""; // Mặc định là chuỗi rỗng nếu không tìm thấy
         try {
@@ -294,7 +286,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
         return content;
 	}
 	
-	private String returnTime(Tweet tweet) {
+	private String returnTime(WebDriver driver, Tweet tweet) {
 		// Lấy ngày đăng tweet
         String tweetDate = ""; // Mặc định là chuỗi rỗng nếu không tìm thấy
         try {
@@ -310,7 +302,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	}
 	
 	
-    private void scrollUntilElementsVisible() {
+    private void scrollUntilElementsVisible(WebDriver driver) {
         while (true) {
             try {
             	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
@@ -333,7 +325,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
         }
     }
 	
-	public void extractInfo(Tweet tweet) {
+	public void extractInfo(WebDriver driver, Tweet tweet) {
 		driver.get(tweet.getUrl());
 		List<WebElement> retryElements = driver.findElements(By.xpath("//span[contains(text(),'Retry') and contains(@class, 'css-1jxf684')]"));
     	
@@ -346,16 +338,16 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
             }
         }
     	
-		tweet.setContent(returnContent(tweet));
-		scrollUntilElementsVisible();
-		tweet.setCommentCount(returnReply(tweet));
-		tweet.setLikeCount(returnLike(tweet));
-		tweet.setRepostCount(returnRepost(tweet));
-		tweet.setViewCount(returnView(tweet));
-		tweet.setPostedDate(returnTime(tweet));
+		tweet.setContent(returnContent(driver,tweet));
+		scrollUntilElementsVisible(driver);
+		tweet.setCommentCount(returnReply(driver,tweet));
+		tweet.setLikeCount(returnLike(driver,tweet));
+		tweet.setRepostCount(returnRepost(driver, tweet));
+		tweet.setViewCount(returnView(driver, tweet));
+		tweet.setPostedDate(returnTime(driver, tweet));
 	}
 	
-	public Set<String> replierURL(User kol, String tweetUrl, int maxComments, int numComments) {
+	public Set<String> replierURL(WebDriver driver, User kol, DataManagerInterface remoteManager, String tweetUrl, int maxComments, int numComments) {
 	    Set<String> replierLinks = new HashSet<>();
 	    int needComments = Math.min(maxComments, numComments); // Số comment cần lấy
 	    int count = 0;
@@ -484,27 +476,15 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	    } finally {
 	        System.out.println("Kết thúc quá trình thu thập danh sách người comment.");
 	    }
-	    manager.saveToDatabase();
+	    remoteManager.saveToDatabase();
 	    return replierLinks;
 	}
 
-		
-	@Override
-	public void fetchProfileFromKOLFile(String filepath) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void fetchFollowersFromKOLFile(String filepath) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void fetchTweetsFromKOLFile(String filepath) {
+	public void fetchTweetsFromKOLFile(WebDriver driver, String filepath, DataManagerInterface remoteManager, boolean done) {
 		int countUp = 0;
 		// TODO Auto-generated method stub
+		FileHandlerInterface fileHandler = config.newFileHandler();
 		Set<String> kolLinks = fileHandler.readElementsFromFile(filepath);
 		if (kolLinks.isEmpty()) {
     		return;
@@ -515,13 +495,22 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
     				return;
     			}
     			User processKOL = new User(kolLink);
-    			if (!manager.hasUser(processKOL.getId())) {
-    				manager.addUserToDataBase(processKOL);
+    			if (!localManager.hasUser(processKOL.getId())) {
+    				if(!remoteManager.hasUser(processKOL.getId())) {
+    					remoteManager.addUserToDataBase(processKOL);
+    				}
+    				else {
+    					processKOL = remoteManager.getUserById(processKOL.getId());
+    				}
+ 
     			}
-    			processKOL = manager.getUserById(processKOL.getId());
+    			else {
+    				processKOL = localManager.getUserById(processKOL.getId());
+    			}
     			Set<Tweet> tweets = processKOL.getTweets();
-    			if (tweets.size() < 2) {
-    				fetchTweets(processKOL);
+    			if (tweets.size() == 0) {
+    				done = false;
+    				fetchTweets(driver, processKOL, remoteManager);
     				countUp++;
     			}else {
     				continue;
@@ -535,45 +524,80 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
     		}
     	}
 	}
-	public boolean isElementPresent(String xpath) {
-	    try {
-	        driver.findElement(By.xpath(xpath));
-	        return true; // Phần tử tồn tại
-	    } catch (Exception e) {
-	        return false; // Phần tử không tồn tại
-	    }
-	}
-	
-	private boolean isElementAfter(WebElement firstElement, WebElement currentElement) {
-	    try {
-	        // Kiểm tra bằng cách sử dụng XPath để đảm bảo phần tử hiện tại xuất hiện sau phần tử đầu tiên
-	        String firstElementXpath = getXpath(firstElement);
-	        String currentElementXpath = getXpath(currentElement);
-	        
-	        // Tạo XPath để so sánh thứ tự xuất hiện
-	        return driver.findElement(By.xpath(firstElementXpath + "/following::" + currentElementXpath)) != null;
-	    } catch (Exception e) {
-	        return false;
-	    }
+	@Override
+	public void fetchTweetsMultiThreads(int threadCount) {
+		// TODO Auto-generated method stub
+		String filepath = config.getKolFilePath();
+		try {
+			List<String> subFilePaths = TwitterFileHandler.splitFile(filepath, threadCount);
+			// Tạo thread pool với số threads xác định
+            ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+
+            // Tạo task cho mỗi thread
+            for (int i = 0; i < threadCount; i++) {
+                final int threadIndex = i;
+                String subFilePath = subFilePaths.get(i);
+                executor.submit(() -> {
+                    try {
+                        // Đọc thông tin đăng nhập cho thread
+                        String loginInfoPath = threadIndex + "_logininfo.txt";
+                        System.out.println(loginInfoPath);
+                        FileHandlerInterface filehandler = config.newFileHandler();
+                        Map<String, String> credentials = filehandler.getCredentialsFromFile(loginInfoPath);
+                        String username = credentials.get("username");
+                        String password = credentials.get("password");
+                        String email = credentials.get("email");
+                        TwitterLogin twitterLogin = new TwitterLogin(username, password, email, config);
+                        String remoteManagerPath = threadIndex + "_database.json";
+                        DataManagerInterface remoteManager = config.newManager(remoteManagerPath);
+          
+                        // Đăng nhập
+   
+
+						// Đào tweets từ file nhỏ
+                        boolean done;
+                        do {
+                        WebDriver driver = new ChromeDriver();
+                        // Đăng nhập
+                         twitterLogin.login(driver);
+                         done = true;
+                        fetchTweetsFromKOLFile(driver, subFilePath, remoteManager, done);
+                        driver.quit();
+                        }while(done == false);
+
+                    } catch (Exception e) {
+                        System.err.println("Thread " + threadIndex + " gặp lỗi: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+            // Đóng ExecutorService sau khi hoàn tất
+            executor.shutdown();
+            while (!executor.isTerminated()) {
+                Thread.sleep(100); // Chờ threads hoàn thành
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 
-	private String getXpath(WebElement element) {
-	    String js = "function getElementXPath(elt) {"
-	        + "var path = '';"
-	        + "while (elt.nodeType === Node.ELEMENT_NODE) {"
-	        + "    var siblingIndex = 1;"
-	        + "    var sibling = elt.previousSibling;"
-	        + "    while (sibling) {"
-	        + "        if (sibling.nodeType === Node.ELEMENT_NODE && sibling.nodeName === elt.nodeName) {"
-	        + "            siblingIndex++;"
-	        + "        }"
-	        + "        sibling = sibling.previousSibling;"
-	        + "    }"
-	        + "    path = '/' + elt.nodeName.toLowerCase() + '[' + siblingIndex + ']' + path;"
-	        + "    elt = elt.parentNode;"
-	        + "}"
-	        + "return path;"
-	        + "return getElementXPath(arguments[0]);";
-	    return (String) ((JavascriptExecutor) driver).executeScript(js, element);
+	@Override
+	public void fetchUserByHashtagsMultiThreads(int threadCount) {
+		// TODO Auto-generated method stub
+		
 	}
+
+	@Override
+	public void fetchProfileMultiThreads(int threadCount) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fetchFollowersMultiThreads(int threadCount) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

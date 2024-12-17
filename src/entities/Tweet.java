@@ -7,21 +7,7 @@ import java.util.Set;
 public class Tweet extends Node {
 
   
-    private final String author_id;
-    
-    //Url
-    // User author = new User(Url)
-    // author_id = author.id;
-    // link : "x/abc.com" -> author_id = "user_abc"
-
-    // set author_id (String url)
-    // {
-    //    this.author_id = extract(url);
-    //
-    
-    // set author_id (String id)
-    //{  this.author_id = id;
-    //
+    private String author_id;
     private Set<String> commentedBy;
     private String url;
     
@@ -54,6 +40,7 @@ public class Tweet extends Node {
     // Constructor sử dụng URL
     public Tweet(String url) {
         this(generateID(url), extractAuthor_id(url)); // Gọi constructor với ID được tạo
+        this.url = url;
     }
 
     // Lấy author_id từ URL
@@ -61,7 +48,11 @@ public class Tweet extends Node {
         if (linkURL != null && linkURL.contains("https://x.com/")) {
             return "user_" + linkURL.substring(linkURL.indexOf("https://x.com/") + "https://x.com/".length(), linkURL.lastIndexOf("/status"));
         }
-        return null; // Trả về null nếu URL không hợp lệ
+        return null; 
+    }
+    
+    public void setAuthor_id(String author_id) {
+    	this.author_id = author_id;
     }
 
 	public String getAuthor_id() {

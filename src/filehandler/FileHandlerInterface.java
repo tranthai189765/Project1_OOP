@@ -1,6 +1,8 @@
 package filehandler;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface FileHandlerInterface {
@@ -23,6 +25,10 @@ public interface FileHandlerInterface {
 	String getModelFilePath();
 	
 	String getProcessedDataFilePath();
-	
+	public static List<String> splitFile(String inputFile, int n) {
+		return null;
+	}
+	public Map<String, String> getCredentialsFromFile(String filePath);
+	public void writeListStringToFile(String filePath, Set<String> recordedLinks);
 
 }

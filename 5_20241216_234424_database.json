@@ -1,0 +1,34 @@
+{
+  "user_BalancedDAO" : [ {
+    "id" : "user_BalancedDAO",
+    "url" : "https://x.com/BalancedDAO",
+    "location" : null,
+    "professionalCategory" : null,
+    "joinDate" : null,
+    "website" : null,
+    "tweetCount" : null,
+    "followingCount" : 0,
+    "followersCount" : 0,
+    "description" : null,
+    "kolType" : null,
+    "followers" : [ "user_aGreenCup25", "user_mtaci96", "user_mosaicregressor", "user_GorillaNeed", "user_benny_options", "user_splo_cto", "user_ecleisouza", "user_GangstaVerse", "user_NorskKiwi1", "user_tesla_alien", "user_RhizomeLabs", "user_maadigrok", "user_FramdNFT", "user_Clever_boiii", "user_bwhli", "user_oldswansonberry", "user_iseek4fx", "user_0x0based", "user_realhonestradio", "user_dashforcashusmc", "user_EyeonICON1", "user_JabaTheX", "user_real_digidavid", "user_lucas_staky", "user_ngio_apesociety", "user_staky_io", "user_poweredbyicx", "user_thomasr1989", "user_CleanwaterSui", "user_theconnectooor", "user_VVKrishnaDeepu", "user_if_elsi", "user_minhokim" ],
+    "following" : [ ],
+    "tweets" : [ ]
+  } ],
+  "user_KleomedesDAO" : [ {
+    "id" : "user_KleomedesDAO",
+    "url" : "https://x.com/KleomedesDAO",
+    "location" : null,
+    "professionalCategory" : null,
+    "joinDate" : null,
+    "website" : null,
+    "tweetCount" : null,
+    "followingCount" : 0,
+    "followersCount" : 0,
+    "description" : null,
+    "kolType" : null,
+    "followers" : [ "user_EJaydouble", "user_DonCryptonium", "user_rnbguy_", "user_SOLChief100x", "user_SEDADecoded", "user_gadikian", "user_bielcik8", "user_brane_trix", "user_CosmosHOSS", "user_CryptoDanvans", "user_AquaOnJuno", "user_GoldenStaking", "user_BlJuane", "user_panofsky167", "user_RomanKarpenk", "user_CryptoChem0000", "user_CosmosPug", "user_zhangce13", "user_JakeHartnell", "user_alisabanoglu", "user_Airdrops_one", "user_sirfortunee_", "user_TendermintTimmy", "user_frensvalidator" ],
+    "following" : [ ],
+    "tweets" : [ ]
+  } ]
+}

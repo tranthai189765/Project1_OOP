@@ -24,6 +24,31 @@
     <artifactId>jackson-databind</artifactId>
     <version>2.15.2</version>
   </dependency>
+  <dependency>
+    <groupId>org.graphstream</groupId>
+    <artifactId>gs-core</artifactId>
+    <version>2.0</version>
+</dependency>
+<dependency>
+        <groupId>org.jfree</groupId>
+        <artifactId>jfreechart</artifactId>
+        <version>1.5.3</version>
+    </dependency>
+    <dependency>
+    <groupId>org.gephi</groupId>
+    <artifactId>gephi-toolkit</artifactId>
+    <version>0.10.1</version>
+</dependency>
+<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20210307</version>
+</dependency>
+
+
+    <!-- JGraphX for graph visualization -->
+
+  
   </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>

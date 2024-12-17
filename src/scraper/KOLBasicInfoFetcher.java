@@ -4,37 +4,44 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.Duration;
-
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import config.ConfigInterface;
 import entities.User;
 import filehandler.FileHandlerInterface;
+import filehandler.TwitterFileHandler;
 import manager.DataManagerInterface;
+import synchronization.DataSyncManager;
 import utils.utils;
 
 
 public class KOLBasicInfoFetcher implements DataFetcherStrategy {
-	private WebDriver driver;
-    private DataManagerInterface manager;
-    private FileHandlerInterface filehandler;
+    private DataManagerInterface localManager;
+    private ConfigInterface config;
 
-    public KOLBasicInfoFetcher(WebDriver driver, DataManagerInterface manager, FileHandlerInterface filehandler ) {
-        this.driver = driver;
-        this.manager = manager;
-        this.filehandler = filehandler;
+    public KOLBasicInfoFetcher(ConfigInterface config) {
+    	
+    	this.config = config;
+
+        this.localManager = config.getLocalManager();
        
     }
 
 
-	@Override
-	public void fetchProfile(User kol) {
+	public void fetchProfile(WebDriver driver, User kol, DataManagerInterface remoteManager, String outputFilepath) {
 	    // TODO Auto-generated method stub
 	    System.out.println("Fetching KOL profile...");
+	    remoteManager.addUserToDataBase(kol);
 	    driver.get(kol.getUrl());
 	    try {
 	        Thread.sleep(10000); // Tạm dừng 3 giây
@@ -124,8 +131,8 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	        kol.setFollowersCount(followersCount);
 	        if(followersCount >= 5000) {
 	        	
-	        	filehandler.writeStringtoFile(filehandler.getProcessedDataFilePath(), kol.getUrl());
-	        	System.out.println("Đã ghi link: "+ kol.getUrl() + "vào " + filehandler.getProcessedDataFilePath());
+	        	config.newFileHandler().writeStringtoFile(outputFilepath, kol.getUrl());
+	        	System.out.println("Đã ghi link: "+ kol.getUrl() + "vào " + outputFilepath);
 	        	
 	        }else {
 	        	System.out.println("Số lượng following không đủ. "+ followersCount + " Dừng xử lý user này: " + kol.getUrl());
@@ -137,8 +144,8 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	    }
 	    kol.setKolType();
 	    if (!kol.getKolType().equals("Non-KOL")) {
-	    manager.addUserToDataBase(kol);
-	    manager.saveToDatabase();
+	    remoteManager.addUserToDataBase(kol);
+	    remoteManager.saveToDatabase();
 	    }
 	    else {
 	    	System.out.println("Không thực hiện cho user vào DataBase : " + kol.getUrl() );
@@ -146,21 +153,8 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	}
 
 
-	@Override
-	public void fetchFollowers(User kol) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void fetchTweets(User kol) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void fetchProfileFromKOLFile(String filepath) {
+	public void fetchProfileFromKOLFile(String filepath, String outputFilepath, WebDriver driver, DataManagerInterface remoteManager) {
 		// TODO Auto-generated method stub
         System.out.println("Đọc các liên kết từ file: " + filepath);
         try (BufferedReader reader = new BufferedReader(new FileReader(filepath))) {
@@ -170,18 +164,18 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
                 if (line.startsWith("https")) { // Kiểm tra nếu là đường dẫn hợp lệ
                     System.out.println("Xử lý URL: " + line);
                     User user = new User(line); // Tạo đối tượng User từ URL
-                    if(manager.hasUser(user.getId())==true) {
-                    	user = manager.getUserById(user.getId());
+                    if(this.localManager.hasUser(user.getId())==true) {
+                    	user = this.localManager.getUserById(user.getId());
                     	if(user.getTweetCount() == null || user.getTweetCount().isEmpty()) {
                     		// Gọi fetchProfile để xử lý User
-                        	fetchProfile(user); 
+                        	fetchProfile(driver, user, remoteManager, outputFilepath); 
                         }else {
-                        	System.out.println("Thông tin cơ bản về User "+ user.getId() + " đã có trong database");
+                        	System.out.println("Thông tin cơ bản về User "+ user.getId() + " đã có trong local database");
                         }
                     }else {
                     	// Gọi fetchProfile để xử lý User
                     	System.out.println("Chưa có thông tin gì về User " + user.getId());
-                    	fetchProfile(user); 
+                    	fetchProfile(driver, user, remoteManager, outputFilepath); 
                     }
                     
                             
@@ -196,17 +190,86 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	}
 
 
+
 	@Override
-	public void fetchFollowersFromKOLFile(String filepath) {
+	public void fetchProfileMultiThreads(int threadCount) {
+		// TODO Auto-generated method stub
+		String filepath = config.getUsersFoundFilePath();
+		String outputFilepath = config.getKolFilePath();
+		try {
+			List<String> subFilePaths = TwitterFileHandler.splitFile(filepath, threadCount);
+			// Tạo thread pool với số threads xác định
+            ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+
+            // Tạo task cho mỗi thread
+            for (int i = 0; i < threadCount; i++) {
+                final int threadIndex = i;
+                String subFilePath = subFilePaths.get(i);
+                executor.submit(() -> {
+                    try {
+                        // Đọc thông tin đăng nhập cho thread
+                        String loginInfoPath = threadIndex + "_logininfo.txt";
+                        System.out.println(loginInfoPath);
+                        FileHandlerInterface filehandler = config.newFileHandler();
+                        Map<String, String> credentials = filehandler.getCredentialsFromFile(loginInfoPath);
+                        String username = credentials.get("username");
+                        String password = credentials.get("password");
+                        String email = credentials.get("email");
+                        TwitterLogin twitterLogin = new TwitterLogin(username, password, email, config);
+                        WebDriver driver = new ChromeDriver();
+                        // Đăng nhập
+                        twitterLogin.login(driver);
+                        
+                        String remoteManagerPath = threadIndex + "_database.json";
+                        DataManagerInterface remoteManager = config.newManager(remoteManagerPath);
+          
+                        // Đăng nhập
+   
+
+                        // Đào tweets từ file nhỏ
+                        fetchProfileFromKOLFile(subFilePath, outputFilepath, driver, remoteManager);
+                        DataSyncManager.syncFromRemote(this.localManager, remoteManager);
+                        driver.quit();
+
+                    } catch (Exception e) {
+                        System.err.println("Thread " + threadIndex + " gặp lỗi: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+            // Đóng ExecutorService sau khi hoàn tất
+            executor.shutdown();
+            while (!executor.isTerminated()) {
+                Thread.sleep(100); // Chờ threads hoàn thành
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+
+
+	@Override
+	public void fetchUserByHashtagsMultiThreads(int threadCount) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
 	@Override
-	public void fetchTweetsFromKOLFile(String filepath) {
+	public void fetchFollowersMultiThreads(int threadCount) {
 		// TODO Auto-generated method stub
 		
 	}
+
+
+	@Override
+	public void fetchTweetsMultiThreads(int threadCount) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
 
 }
