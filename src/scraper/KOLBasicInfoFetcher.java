@@ -17,12 +17,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import config.ConfigInterface;
+import converter.TextToIntegerConverter;
 import entities.User;
-import filehandler.FileHandlerInterface;
-import filehandler.TwitterFileHandler;
+import filehandler.FileHandler;
 import manager.DataManagerInterface;
 import synchronization.DataSyncManager;
-import utils.utils;
 
 
 public class KOLBasicInfoFetcher implements DataFetcherStrategy {
@@ -41,7 +40,7 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	public void fetchProfile(WebDriver driver, User kol, DataManagerInterface remoteManager, String outputFilepath) {
 	    // TODO Auto-generated method stub
 	    System.out.println("Fetching KOL profile...");
-	    remoteManager.addUserToDataBase(kol);
+	    //remoteManager.addUserToDataBase(kol);
 	    driver.get(kol.getUrl());
 	    try {
 	        Thread.sleep(10000); // Tạm dừng 3 giây
@@ -116,7 +115,7 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	        // Lấy số lượng following của user
 	        WebElement followingCountElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[href$='/following'] span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3")));
 	        String followingCountText  = followingCountElement.getText();
-	        int followingCount = utils.convertTextToInteger(followingCountText);
+	        int followingCount = TextToIntegerConverter.convertTextToInteger(followingCountText);
 	        kol.setFollowingCount(followingCount);
 	    } catch (Exception e) {
 	        System.out.println("Không tìm thấy số lượng following của user.");
@@ -127,11 +126,11 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 	        // Lấy số lượng followers của user
 	    	WebElement followersCountElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[href$='/verified_followers'] span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3")));
 	        String followersCountText = followersCountElement.getText();
-	        int followersCount = utils.convertTextToInteger(followersCountText);
+	        int followersCount = TextToIntegerConverter.convertTextToInteger(followersCountText);
 	        kol.setFollowersCount(followersCount);
 	        if(followersCount >= 5000) {
 	        	
-	        	config.newFileHandler().writeStringtoFile(outputFilepath, kol.getUrl());
+	        	FileHandler.writeStringToFile(outputFilepath, kol.getUrl());
 	        	System.out.println("Đã ghi link: "+ kol.getUrl() + "vào " + outputFilepath);
 	        	
 	        }else {
@@ -197,7 +196,7 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
 		String filepath = config.getUsersFoundFilePath();
 		String outputFilepath = config.getKolFilePath();
 		try {
-			List<String> subFilePaths = TwitterFileHandler.splitFile(filepath, threadCount);
+			List<String> subFilePaths = FileHandler.splitFile(filepath, threadCount);
 			// Tạo thread pool với số threads xác định
             ExecutorService executor = Executors.newFixedThreadPool(threadCount);
 
@@ -210,8 +209,7 @@ public class KOLBasicInfoFetcher implements DataFetcherStrategy {
                         // Đọc thông tin đăng nhập cho thread
                         String loginInfoPath = threadIndex + "_logininfo.txt";
                         System.out.println(loginInfoPath);
-                        FileHandlerInterface filehandler = config.newFileHandler();
-                        Map<String, String> credentials = filehandler.getCredentialsFromFile(loginInfoPath);
+                        Map<String, String> credentials = FileHandler.getCredentialsFromFile(loginInfoPath);
                         String username = credentials.get("username");
                         String password = credentials.get("password");
                         String email = credentials.get("email");

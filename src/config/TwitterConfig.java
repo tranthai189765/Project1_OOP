@@ -3,32 +3,230 @@ package config;
 import java.util.ArrayList;
 import java.util.List;
 
-import filehandler.FileHandlerInterface;
-import filehandler.TwitterFileHandler;
 import manager.DataManagerInterface;
 import manager.TwitterDataManager;
 
 public class TwitterConfig implements ConfigInterface {
 	
-	private final String baseName = "Twitter";
-	private final String loginURL = "https://twitter.com/login";
-	private final String exploreURL = "https://x.com/explore";
-	private final String peopleTabXpath = "//*[@id='react-root']/div/div/div[2]/main/div/div/div/div[1]/div/div[1]/div[1]/div[2]/nav/div/div[2]/div/div[3]/a/div/div/span";
-	private final String retryButtonXpath = "//span[contains(text(),'Retry') and contains(@class, 'css-1jxf684')]";
-	private final String loginButtonXpath = "//span[text()='Log in']";
-	private final String nextButtonXpath = "//span[text()='Next']";
-	
+    private final String baseName = "Twitter";
+    private final String baseURL = "https://x.com/";
+    private final String loginURL = "https://twitter.com/login";
+    private final String exploreURL = "https://x.com/explore";
+    
+    // XPaths
+    private final String peopleTabXpath = "//*[@id='react-root']/div/div/div[2]/main/div/div/div/div[1]/div/div[1]/div[1]/div[2]/nav/div/div[2]/div/div[3]/a/div/div/span";
+    private final String retryButtonXpath = "//span[contains(text(),'Retry') and contains(@class, 'css-1jxf684')]";
+    private final String loginButtonXpath = "//span[text()='Log in']";
+    private final String nextButtonXpath = "//span[text()='Next']";
+    private final String postCountXpath = "//div[contains(text(),'posts')]";
+    private final String followingCountElementXpath = "a[href$='/following'] span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3";
+    private final String followersCountElementXpath = "a[href$='/verified_followers'] span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3";
+    private final String timeXpath = "//div[contains(@class, 'css-146c3p1')]//a//time";
+    private final String showButtonXpath = "//button[contains(@class, 'css-175oi2r')]//span[normalize-space(text())='Show']";
+    private final String showSpamCommentsButtonXpath = "//button[contains(@class, 'css-175oi2r') and contains(., 'Show probable spam')]";
+    private final String discoverMoreElementXpath = "//h2[contains(., 'Discover more')]";
+    private final String articleXpath = "//article[starts-with(@aria-labelledby, '')]";
+    private final String articleBoundOfDiscoverMoreXpath = "//h2[contains(., 'Discover more')]/preceding::article";
+    private final String advertisementXpath = ".//*[contains(text(), 'Ad ')]";
+    private final String articleInfoXpath = ".//*[@data-testid='Tweet-User-Avatar']";
+    
+    // CSS Selectors
+    private final String searchQuerryCSS = "input[aria-label='Search query']";
+    private final String userCellCSS = "button[data-testid='UserCell']";
+    private final String linksCSS = "a[href*='/']";
+    private final String linksAttributeCSS = "href";
+    private final String nameElementCSS = "span[dir='ltr']";
+    private final String userDescriptionCSS = "div[data-testid='UserDescription']";
+    private final String userJobCategoryCSS = "span[data-testid='UserProfessionalCategory'] button span";
+    private final String locationElementCSS = "span[data-testid='UserLocation'] span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3";
+    private final String userURLCSS = "a[data-testid='UserUrl']";
+    private final String userJoinDate = "span[data-testid='UserJoinDate']";
+    private final String tweetsElementCSS = "article[data-testid='tweet']";
+    private final String tweetListElementCSS = "a[href*='/status/']";
+    private final String tweetElementCSS = "a[href*='/status/']";
+    private final String repliersCSS = "article[data-testid='tweet']";
+    private final String replyButtonCSS = "button[data-testid='reply']";
+    private final String replyCountCSS = "span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3";
+    private final String retweetButtonCSS = "button[data-testid='retweet']";
+    private final String retweetCountCSS = "span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3";
+    private final String likeButtonCSS = "button[data-testid='like']";
+    private final String likeCountCSS = "span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3";
+    private final String viewCountCSS = "span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3 > div > span > span.css-1jxf684.r-bcqeeo.r-1ttztb7.r-qvutc0.r-poiln3";
+    private final String tweetTextCSS = "div[data-testid='tweetText']";
+
+    // Attributes
+    private final String dateTimeAttribute = "datetime";
+    
+    // Parametters   
 	private int maxUsers = 2;
 	private int maxFollowers = 5;
 	private int maxTweets = 2;
 	private int maxComments = 30;
 	private String graphFilePath =  "new_graph.gexf"; 
-	private DataManagerInterface localManager = new TwitterDataManager("new_database.json");
+	private DataManagerInterface localManager = new TwitterDataManager("changed_database_11.json");
 	private String hashtagsFilePath = "hashtags.txt";
 	private String kolFilePath = "new_kol_links.txt";
 	private String completedHashtagsFilePath = "new_completed_hashtags.txt";
 	private String usersFoundFilePath = "new_all_user_links.txt";
+	private String resultFilePath = "result.txt";
+	
+	public String getSearchQuerryCSS() {
+		return searchQuerryCSS;
+	}
 
+	public String getUserCellCSS() {
+		return userCellCSS;
+	}
+
+	public String getLinksCSS() {
+		return linksCSS;
+	}
+
+	public String getLinksAttributeCSS() {
+		return linksAttributeCSS;
+	}
+
+	public String getNameElementCSS() {
+		return nameElementCSS;
+	}
+
+	public String getPostCountXpath() {
+		return postCountXpath;
+	}
+
+	public String getUserDescriptionCSS() {
+		return userDescriptionCSS;
+	}
+
+	public String getUserJobCategoryCSS() {
+		return userJobCategoryCSS;
+	}
+
+	public String getLocationElementCSS() {
+		return locationElementCSS;
+	}
+
+	public String getUserURLCSS() {
+		return userURLCSS;
+	}
+
+	public String getUserJoinDate() {
+		return userJoinDate;
+	}
+
+	public String getFollowingCountElementXpath() {
+		return followingCountElementXpath;
+	}
+
+	public String getFollowersCountElementXpath() {
+		return followersCountElementXpath;
+	}
+
+	public String getTweetsElementCSS() {
+		return tweetsElementCSS;
+	}
+
+	public String getTweetListElementCSS() {
+		return tweetListElementCSS;
+	}
+
+	public String getTweetElementCSS() {
+		return tweetElementCSS;
+	}
+
+	public String getRepliersCSS() {
+		return repliersCSS;
+	}
+
+	public String getBaseURL() {
+		return baseURL;
+	}
+
+	public String getReplyButtonCSS() {
+		return replyButtonCSS;
+	}
+
+	public String getReplyCountCSS() {
+		return replyCountCSS;
+	}
+
+	public String getRetweetButtonCSS() {
+		return retweetButtonCSS;
+	}
+
+	public String getRetweetCountCSS() {
+		return retweetCountCSS;
+	}
+
+	public String getLikeButtonCSS() {
+		return likeButtonCSS;
+	}
+
+	public String getLikeCountCSS() {
+		return likeCountCSS;
+	}
+
+	public String getViewCountCSS() {
+		return viewCountCSS;
+	}
+
+	public String getTweetTextCSS() {
+		return tweetTextCSS;
+	}
+
+	public String getTimeXpath() {
+		return timeXpath;
+	}
+
+	public String getDateTimeAttribute() {
+		return dateTimeAttribute;
+	}
+
+	public String getShowButtonXpath() {
+		return showButtonXpath;
+	}
+
+	public String getShowSpamCommentsButtonXpath() {
+		return showSpamCommentsButtonXpath;
+	}
+
+	public String getDiscoverMoreElementXpath() {
+		return discoverMoreElementXpath;
+	}
+
+	public String getArticleXpath() {
+		return articleXpath;
+	}
+
+	public String getArticleBoundOfDiscoverMoreXpath() {
+		return articleBoundOfDiscoverMoreXpath;
+	}
+
+	public String getAdvertisementXpath() {
+		return advertisementXpath;
+	}
+
+	public String getArticleInfoXpath() {
+		return articleInfoXpath;
+	}
+
+	public String getLoginURL() {
+		return loginURL;
+	}
+
+	public String getExploreURL() {
+		return exploreURL;
+	}
+
+
+	public String getHashtagsFilePath() {
+		return hashtagsFilePath;
+	}
+
+	public void setCompletedHashtagsFilePath(String completedHashtagsFilePath) {
+		this.completedHashtagsFilePath = completedHashtagsFilePath;
+	}
+	
 	@Override
 	public String getBaseName() {
 		// TODO Auto-generated method stub
@@ -93,12 +291,6 @@ public class TwitterConfig implements ConfigInterface {
 	public DataManagerInterface newManager(String databasefilepath) {
 		// TODO Auto-generated method stub
 		return new TwitterDataManager(databasefilepath);
-	}
-
-	@Override
-	public FileHandlerInterface newFileHandler() {
-		// TODO Auto-generated method stub
-		return new TwitterFileHandler();
 	}
 
 	@Override
@@ -194,5 +386,13 @@ public class TwitterConfig implements ConfigInterface {
 	public void setUsersFoundFilePath(String usersFoundFilePath) {
 		this.usersFoundFilePath = usersFoundFilePath;
 	}
-	
+
+	public String getResultFilePath() {
+		return resultFilePath;
+	}
+
+	public void setResultFilePath(String resultFilePath) {
+		this.resultFilePath = resultFilePath;
+	}
+
 }

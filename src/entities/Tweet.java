@@ -3,64 +3,63 @@ package entities;
 import java.util.HashSet;
 import java.util.Set;
 
-
 public class Tweet extends Node {
-
-  
-    private String author_id;
+    
+    private String authorId;
     private Set<String> commentedBy;
     private String url;
-    
     private String likeCount;
     private String viewCount;
     private String content;
     private String postedDate;
     private String repostCount;
     private String commentCount;
-    
+
+    // Constructor mặc định
     public Tweet() {
         super();
         this.commentedBy = new HashSet<>();
-        this.author_id = null;
+        this.authorId = null;
     }
 
-    public Tweet(String id, String author_id) {
+    // Constructor với ID và authorId
+    public Tweet(String id, String authorId) {
         super(id);
-        this.author_id = author_id;
+        this.authorId = authorId;
         this.commentedBy = new HashSet<>();
-    }
-    
-    // Tạo ID cho tweet từ URL
-    private static String generateID(String linkURL) {
-        String username = linkURL.substring(linkURL.indexOf("https://x.com/") + "https://x.com/".length(), linkURL.lastIndexOf("/status"));
-        String tweetId = linkURL.substring(linkURL.lastIndexOf("/") + 1);
-        return "tweet_" + username + "_" + tweetId;
     }
 
     // Constructor sử dụng URL
     public Tweet(String url) {
-        this(generateID(url), extractAuthor_id(url)); // Gọi constructor với ID được tạo
+        this(generateId(url), extractAuthorId(url)); // Gọi constructor với ID được tạo
         this.url = url;
     }
 
-    // Lấy author_id từ URL
-    private static String extractAuthor_id(String linkURL) {
-        if (linkURL != null && linkURL.contains("https://x.com/")) {
-            return "user_" + linkURL.substring(linkURL.indexOf("https://x.com/") + "https://x.com/".length(), linkURL.lastIndexOf("/status"));
+    // Tạo ID cho tweet từ URL
+    private static String generateId(String linkUrl) {
+        String username = linkUrl.substring(linkUrl.indexOf("https://x.com/") + "https://x.com/".length(), linkUrl.lastIndexOf("/status"));
+        String tweetId = linkUrl.substring(linkUrl.lastIndexOf("/") + 1);
+        return "tweet_" + username + "_" + tweetId;
+    }
+
+    // Lấy authorId từ URL
+    private static String extractAuthorId(String linkUrl) {
+        if (linkUrl != null && linkUrl.contains("https://x.com/")) {
+            return "user_" + linkUrl.substring(linkUrl.indexOf("https://x.com/") + "https://x.com/".length(), linkUrl.lastIndexOf("/status"));
         }
         return null; 
     }
-    
-    public void setAuthor_id(String author_id) {
-    	this.author_id = author_id;
+
+    // Getter và setter
+    public String getAuthorId() {
+        return authorId;
     }
 
-	public String getAuthor_id() {
-		return author_id;
-	}
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
+    }
 
-
-	public Set<String> getCommentedBy() {
+    public Set<String> getCommentedBy() {
         return commentedBy;
     }
 
@@ -68,85 +67,85 @@ public class Tweet extends Node {
         this.commentedBy = commentedBy;
     }
 
-	public String getLikeCount() {
-		return likeCount;
-	}
+    public String getLikeCount() {
+        return likeCount;
+    }
 
-	public void setLikeCount(String likeCount) {
-		this.likeCount = likeCount;
-	}
+    public void setLikeCount(String likeCount) {
+        this.likeCount = likeCount;
+    }
 
-	public String getViewCount() {
-		return viewCount;
-	}
+    public String getViewCount() {
+        return viewCount;
+    }
 
-	public void setViewCount(String viewCount) {
-		this.viewCount = viewCount;
-	}
+    public void setViewCount(String viewCount) {
+        this.viewCount = viewCount;
+    }
 
-	public String getContent() {
-		return content;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public String getPostedDate() {
-		return postedDate;
-	}
+    public String getPostedDate() {
+        return postedDate;
+    }
 
-	public void setPostedDate(String postedDate) {
-		this.postedDate = postedDate;
-	}
+    public void setPostedDate(String postedDate) {
+        this.postedDate = postedDate;
+    }
 
-	public String getRepostCount() {
-		return repostCount;
-	}
+    public String getRepostCount() {
+        return repostCount;
+    }
 
-	public void setRepostCount(String repostCount) {
-		this.repostCount = repostCount;
-	}
+    public void setRepostCount(String repostCount) {
+        this.repostCount = repostCount;
+    }
 
-	public String getCommentCount() {
-		return commentCount;
-	}
+    public String getCommentCount() {
+        return commentCount;
+    }
 
-	public void setCommentCount(String commentCount) {
-		this.commentCount = commentCount;
-	}
+    public void setCommentCount(String commentCount) {
+        this.commentCount = commentCount;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	@Override
-	public String toString() {
-	    return "Tweet{" +
-	           "id='" + getId() + '\'' +
-	           ", author_id='" + author_id + '\'' +
-	           ", likeCount='" + likeCount + '\'' +
-	           ", viewCount='" + viewCount + '\'' +
-	           ", content='" + content + '\'' +
-	           ", postedDate='" + postedDate + '\'' +
-	           ", repostCount='" + repostCount + '\'' +
-	           ", commentCount='" + commentCount + '\'' +
-	           ", commentedBy=" + commentedBy.size() + " commented" +
-	           '}';
-	}
+    // Chuyển đổi đối tượng thành chuỗi thông tin
+    @Override
+    public String toString() {
+        return "Tweet{" +
+               "id='" + getId() + '\'' +
+               ", authorId='" + authorId + '\'' +
+               ", likeCount='" + likeCount + '\'' +
+               ", viewCount='" + viewCount + '\'' +
+               ", content='" + content + '\'' +
+               ", postedDate='" + postedDate + '\'' +
+               ", repostCount='" + repostCount + '\'' +
+               ", commentCount='" + commentCount + '\'' +
+               ", commentedBy=" + commentedBy.size() + " commented" +
+               '}';
+    }
 
-	// Phương thức thêm user_id vào danh sách commentedBy
-	public void addCommentedUser(String userId) {
-	    commentedBy.add(userId);
-	}
+    // Thêm userId vào danh sách commentedBy
+    public void addCommentedUser(String userId) {
+        commentedBy.add(userId);
+    }
 
-	// Phương thức kiểm tra xem user_id có trong danh sách commentedBy không
-	public boolean hasCommented(String userId) {
-	    return commentedBy != null && commentedBy.contains(userId);
-	}
-
+    // Kiểm tra xem userId có trong danh sách commentedBy không
+    public boolean hasCommented(String userId) {
+        return commentedBy != null && commentedBy.contains(userId);
+    }
 }

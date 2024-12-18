@@ -139,7 +139,7 @@ public class TwitterDataManager implements DataManagerInterface {
 	            existingUser.setDescription(updatedUser.getDescription());
 	            existingUser.setFollowersCount(updatedUser.getFollowersCount());
 	            existingUser.setFollowingCount(updatedUser.getFollowingCount());
-	            existingUser.SetId(updatedUser.getId());
+	            existingUser.setId(updatedUser.getId());
 	            existingUser.setJoinDate(updatedUser.getJoinDate());
 	            existingUser.setLocation(updatedUser.getLocation());
 	            existingUser.setProfessionalCategory(updatedUser.getProfessionalCategory());

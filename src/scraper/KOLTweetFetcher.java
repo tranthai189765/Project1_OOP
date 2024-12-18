@@ -19,14 +19,13 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import config.ConfigInterface;
-import utils.utils;
+import converter.TextToIntegerConverter;
 
 import entities.User;
 import entities.Tweet;
 
 import manager.DataManagerInterface;
-import filehandler.FileHandlerInterface;
-import filehandler.TwitterFileHandler;
+import filehandler.FileHandler;
 
 public class KOLTweetFetcher implements DataFetcherStrategy {
 	private final DataManagerInterface localManager;
@@ -111,11 +110,6 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
             }
             for(String tweetLink : tweetLinks) {
             	System.out.println("Đang xử lý cho: " + tweetLink);
-            	//String tweetId = tweetLink.substring(tweetLink.lastIndexOf("/") + 1);
-            	//String username = tweetLink.substring(tweetLink.indexOf("https://x.com/") + "https://x.com/".length(), tweetLink.lastIndexOf("/status"));
-            	//Tweet tweet = new Tweet(tweetId, username);
-            	//System.out.println(tweet.getAuthor_id());
-            	//tweet.setUrl(tweetLink);
             	Tweet tweet = new Tweet(tweetLink);
             	if (!kol.hasTweet(tweet)) {
             		kol.addTweet(tweet);
@@ -178,7 +172,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 			countRespawn++;
 			System.out.println("CountRespawn: " + countRespawn);
 			extractInfo(driver, tweet);
-			int numComments = utils.convertTextToInteger(tweet.getCommentCount());
+			int numComments = TextToIntegerConverter.convertTextToInteger(tweet.getCommentCount());
         	if (numComments == 0) {
         		continue;
         	}
@@ -484,7 +478,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 	public void fetchTweetsFromKOLFile(WebDriver driver, String filepath, DataManagerInterface remoteManager, boolean done) {
 		int countUp = 0;
 		// TODO Auto-generated method stub
-		FileHandlerInterface fileHandler = config.newFileHandler();
+		FileHandler fileHandler = new FileHandler();
 		Set<String> kolLinks = fileHandler.readElementsFromFile(filepath);
 		if (kolLinks.isEmpty()) {
     		return;
@@ -529,7 +523,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
 		// TODO Auto-generated method stub
 		String filepath = config.getKolFilePath();
 		try {
-			List<String> subFilePaths = TwitterFileHandler.splitFile(filepath, threadCount);
+			List<String> subFilePaths = FileHandler.splitFile(filepath, threadCount);
 			// Tạo thread pool với số threads xác định
             ExecutorService executor = Executors.newFixedThreadPool(threadCount);
 
@@ -542,8 +536,7 @@ public class KOLTweetFetcher implements DataFetcherStrategy {
                         // Đọc thông tin đăng nhập cho thread
                         String loginInfoPath = threadIndex + "_logininfo.txt";
                         System.out.println(loginInfoPath);
-                        FileHandlerInterface filehandler = config.newFileHandler();
-                        Map<String, String> credentials = filehandler.getCredentialsFromFile(loginInfoPath);
+                        Map<String, String> credentials = FileHandler.getCredentialsFromFile(loginInfoPath);
                         String username = credentials.get("username");
                         String password = credentials.get("password");
                         String email = credentials.get("email");

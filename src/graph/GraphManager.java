@@ -13,6 +13,7 @@ import org.openide.util.Lookup;
 import entities.User;
 import entities.Tweet;
 
+
 public class GraphManager {
 	private GraphModel graphModel;
     private Graph graph;
@@ -98,7 +99,7 @@ public class GraphManager {
             } else if (Tweet.class.isInstance(source) && User.class.isInstance(sink)) {
             	Tweet tweetSource = (Tweet) source;
                 User userSink = (User) sink;
-                if (tweetSource.getAuthor_id().equals(userSink.getId())) {
+                if (tweetSource.getAuthorId().equals(userSink.getId())) {
                     edge.setLabel("posted");
                 }
             }

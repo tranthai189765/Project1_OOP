@@ -7,11 +7,9 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-
-
 public class User extends Node {
+
     private String url;
     private String location;
     private String professionalCategory;
@@ -23,14 +21,11 @@ public class User extends Node {
     private String description;
     private String kolType;
 
-
     private Set<String> followers;
-
-
     private Set<String> following;
     private Set<Tweet> tweets;
 
-    // Constructor
+    // Constructor mặc định
     public User() {
         super();
         this.followers = new HashSet<>();
@@ -38,6 +33,7 @@ public class User extends Node {
         this.tweets = new HashSet<>();
     }
     
+    // Constructor với id và url
     public User(String id, String url) {
         super(id);
         this.url = url;
@@ -46,12 +42,14 @@ public class User extends Node {
         this.tweets = new HashSet<>();
     }
     
+    // Constructor với url
     public User(String url) {
-    	this(generateId(url), url);
+        this(generateId(url), url);
     }
     
+    // Tạo ID từ URL
     private static String generateId(String url) {
-        return "user_"+url.substring(url.lastIndexOf("/") + 1); // Tạo id dựa trên timestamp
+        return "user_" + url.substring(url.lastIndexOf("/") + 1); // Tạo id từ phần cuối URL
     }
 
     // Getter và Setter cho URL
@@ -163,25 +161,25 @@ public class User extends Node {
     }
 
     // Phương thức thêm follower
-    public void addFollower(String follower_id) {
-        followers.add(follower_id);
+    public void addFollower(String followerId) {
+        followers.add(followerId);
     }
     
-    public boolean hasFollower(String follower_id) {
-        return followers.contains(follower_id);
+    public boolean hasFollower(String followerId) {
+        return followers.contains(followerId);
     }
     
     public void addTweet(Tweet tweet) {
-    	tweets.add(tweet);
+        tweets.add(tweet);
     }
     
     public boolean hasTweet(Tweet tweet) {
-    	return tweets.contains(tweet);
+        return tweets.contains(tweet);
     }
 
     // Phương thức thêm following
-    public void addFollowing(String followee_id) {
-        following.add(followee_id);
+    public void addFollowing(String followeeId) {
+        following.add(followeeId);
     }
 
     // Phương thức kiểm tra xem người dùng có theo dõi người khác không
@@ -194,13 +192,14 @@ public class User extends Node {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         User user = (User) obj;
-        return Objects.equals(getId(), user.getId()); // So sánh bằng ID
+        return Objects.equals(getId(), user.getId()); // So sánh theo ID
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId()); // Sử dụng ID để tạo hash
+        return Objects.hash(getId()); // Tạo hash từ ID
     }
+    
     @Override
     public String toString() {
         return "User{" +
@@ -220,23 +219,22 @@ public class User extends Node {
                '}';
     }
 
-	public String getKolType() {
-		return kolType;
-	}
+    // Getter và Setter cho Kol Type
+    public String getKolType() {
+        return kolType;
+    }
 
-	public void setKolType() {
-	    if (this.followersCount >= 1000000) {
-	        this.kolType = "Mega KOL (Celebrity)";
-	    } else if (this.followersCount >= 100000) {
-	        this.kolType = "Macro KOL";
-	    } else if (this.followersCount >= 10000) {
-	        this.kolType = "Micro KOL";
-	    } else if (this.followersCount >= 1000) {
-	        this.kolType = "Nano KOL";
-	    } else {
-	        this.kolType = "Non-KOL";  // Nếu followers dưới 1000
-	    }
-	}
-
+    public void setKolType() {
+        if (this.followersCount >= 1000000) {
+            this.kolType = "Mega KOL (Celebrity)";
+        } else if (this.followersCount >= 100000) {
+            this.kolType = "Macro KOL";
+        } else if (this.followersCount >= 10000) {
+            this.kolType = "Micro KOL";
+        } else if (this.followersCount >= 1000) {
+            this.kolType = "Nano KOL";
+        } else {
+            this.kolType = "Non-KOL";  
+        }
+    }
 }
-

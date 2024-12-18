@@ -4,16 +4,20 @@ import manager.DataManagerInterface;
 import java.util.List;
 import java.util.Map;
 
+import config.ConfigInterface;
 import entities.Tweet;
 import entities.User;
 public class GraphBuilder {
 	private DataManagerInterface dataManager;
 	private GraphManager graphManager;
-	public GraphBuilder(GraphManager graphManager, DataManagerInterface dataManager) {
-		this.dataManager = dataManager;
+	public GraphBuilder(GraphManager graphManager, ConfigInterface config) {
+		this.dataManager = config.getLocalManager();
 		this.graphManager = graphManager;
+		
 	}
-	public void buildGraph(String filepath) {
+	public void buildGraph(ConfigInterface config) {
+		
+		String filepath = config.getGraphFilePath();
         // Tải dữ liệu từ database
         dataManager.loadFromDatabase();
 
@@ -29,14 +33,14 @@ public class GraphBuilder {
                   for (Tweet tweet : user.getTweets()) {
                     graphManager.addNode(tweet);
                     User author = new User();
-                    author.SetId(tweet.getAuthor_id());
+                    author.setId(tweet.getAuthorId());
                     graphManager.addEdge(tweet, author);
                     if(user.getId().equals(author.getId()) == false) {
                     	graphManager.addEdge(user, tweet);
                     }
                     for (String commenter_id : tweet.getCommentedBy()) {
                     	User commenter = new User();
-                    	commenter.SetId(commenter_id);
+                    	commenter.setId(commenter_id);
                     	graphManager.addEdge(commenter, tweet);
                     }
                 }

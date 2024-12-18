@@ -20,3 +20,4 @@ public interface DataManagerInterface {
     public List<String> getUserIds();
 	String getDatabasefilepath();
 }
+

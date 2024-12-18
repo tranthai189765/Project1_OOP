@@ -20,9 +20,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import config.ConfigInterface;
 import entities.User;
-import filehandler.TwitterFileHandler;
+import filehandler.FileHandler;
 import manager.DataManagerInterface;
-import filehandler.FileHandlerInterface;
 
 public class KOLFollowerFetcher implements DataFetcherStrategy{
 	private final DataManagerInterface localManager;
@@ -195,7 +194,7 @@ public class KOLFollowerFetcher implements DataFetcherStrategy{
 		// TODO Auto-generated method stub
 		String filepath = config.getKolFilePath();
 		try {
-			List<String> subFilePaths = TwitterFileHandler.splitFile(filepath, threadCount);
+			List<String> subFilePaths = FileHandler.splitFile(filepath, threadCount);
 			// Tạo thread pool với số threads xác định
             ExecutorService executor = Executors.newFixedThreadPool(threadCount);
 
@@ -208,8 +207,7 @@ public class KOLFollowerFetcher implements DataFetcherStrategy{
                         // Đọc thông tin đăng nhập cho thread
                         String loginInfoPath = threadIndex + "_logininfo.txt";
                         System.out.println(loginInfoPath);
-                        FileHandlerInterface filehandler = config.newFileHandler();
-                        Map<String, String> credentials = filehandler.getCredentialsFromFile(loginInfoPath);
+                        Map<String, String> credentials = FileHandler.getCredentialsFromFile(loginInfoPath);
                         String username = credentials.get("username");
                         String password = credentials.get("password");
                         String email = credentials.get("email");
